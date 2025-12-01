@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const heroBackgroundImage = useMemo(() => {
-    const videoPath = "/docs/bg.mp4";
+    const videoPath = "/bg.mp4"; // موجود الآن في مجلد public
     return videoPath;
   }, []);
 
