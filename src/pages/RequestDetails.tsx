@@ -1,31 +1,148 @@
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getTrackingRequestDetails, getTrackingLogs } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getTrackingRequestFull, updateTrackingStatus } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, MapPin, Clock, User, Building2, Radio } from "lucide-react";
+import { ArrowRight, MapPin, Clock, User, Building2, Radio, Wifi, PlugZap } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MapContainer, Marker, Polyline, TileLayer } from "react-leaflet";
+import L from "leaflet";
+import { TrackingLog, TrackingRequest, TrackingStatus } from "@/types/api";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const RequestDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: request, isLoading: requestLoading } = useQuery({
-    queryKey: ["tracking-request", id],
-    queryFn: () => getTrackingRequestDetails(Number(id)),
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["tracking-request-full", id],
+    queryFn: () => getTrackingRequestFull(Number(id)),
     enabled: !!id,
   });
 
-  const { data: logs, isLoading: logsLoading } = useQuery({
-    queryKey: ["tracking-logs", id],
-    queryFn: () => getTrackingLogs(Number(id)),
-    enabled: !!id,
+  const [liveLogs, setLiveLogs] = useState<TrackingLog[]>([]);
+  const [socketStatus, setSocketStatus] = useState<"connected" | "disconnected" | "connecting">("connecting");
+  const [requestStatus, setRequestStatus] = useState<string | null>(null);
+
+  const request = data?.request;
+  const logs = useMemo(() => {
+    const baseLogs = data?.logs || [];
+    return [...baseLogs, ...liveLogs].sort(
+      (a, b) => new Date(a.captured_at).getTime() - new Date(b.captured_at).getTime(),
+    );
+  }, [data?.logs, liveLogs]);
+
+  useEffect(() => {
+    if (!id) return;
+    const controller = new AbortController();
+    const protocolSafe = (url: string) => {
+      if (url.startsWith("https://")) return url.replace("https://", "wss://");
+      if (url.startsWith("http://")) return url.replace("http://", "ws://");
+      return url;
+    };
+    const base = "https://slid.ethra2.com";
+    const wsUrl = protocolSafe(`${base}/ws/tracking-requests/${id}`);
+
+    setSocketStatus("connecting");
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => setSocketStatus("connected");
+    ws.onerror = () => setSocketStatus("disconnected");
+    ws.onclose = () => setSocketStatus("disconnected");
+
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.event === "init") {
+          if (msg.data?.logs) {
+            setLiveLogs(msg.data.logs);
+            queryClient.setQueryData(["tracking-request-full", id], (prev: any) => ({
+              ...(prev || {}),
+              request: msg.data.request || prev?.request,
+              logs: msg.data.logs || prev?.logs,
+            }));
+          }
+          if (msg.data?.request?.status) {
+            setRequestStatus(msg.data.request.status);
+          }
+        } else if (msg.event === "log_added" && msg.data) {
+          setLiveLogs((prev) => {
+            const exists = prev.find((l) => l.id === msg.data.id);
+            if (exists) return prev;
+            return [...prev, msg.data];
+          });
+        } else if (msg.event === "request_updated") {
+          if (msg.status) {
+            setRequestStatus(msg.status);
+            toast.info(`تم تحديث حالة الطلب إلى: ${msg.status}`);
+          }
+        } else if (msg.event === "error") {
+          toast.error(msg.message || "خطأ في البث الحي");
+        }
+      } catch (error) {
+        console.error("WS parse error", error);
+      }
+    };
+
+    return () => {
+      controller.abort();
+      ws.close();
+    };
+  }, [id, queryClient]);
+
+  const center = useMemo(() => {
+    if (logs && logs.length > 0) {
+      const last = logs[logs.length - 1];
+      return [last.latitude, last.longitude] as [number, number];
+    }
+    return [24.7136, 46.6753] as [number, number];
+  }, [logs]);
+
+  const leafletIcon = useMemo(
+    () =>
+      new L.Icon({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+      }),
+    [],
+  );
+
+  const getStatusBadge = (status: string) => {
+    const variants = {
+      new: { variant: "secondary" as const, label: "جديد", className: "" },
+      in_progress: {
+        variant: "outline" as const,
+        label: "قيد المعالجة",
+        className: "border-blue-500 text-blue-700 bg-blue-50",
+      },
+      done: { variant: "outline" as const, label: "مكتمل", className: "border-green-500 text-green-700 bg-green-50" },
+      rejected: { variant: "destructive" as const, label: "مرفوض", className: "" },
+    };
+
+    const config = variants[status as keyof typeof variants] || { variant: "secondary" as const, label: status, className: "" };
+    return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
+  };
+
+  const statusMutation = useMutation({
+    mutationFn: ({ status }: { status: TrackingStatus }) => updateTrackingStatus(Number(id), status),
+    onSuccess: (updated) => {
+      setRequestStatus(updated.status);
+      toast.success("تم تحديث حالة الطلب");
+      queryClient.invalidateQueries({ queryKey: ["tracking-request-full", id] });
+    },
+    onError: () => toast.error("فشل تحديث الحالة"),
   });
 
-  if (requestLoading) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-12 w-64" />
@@ -41,18 +158,6 @@ const RequestDetails = () => {
       </div>
     );
   }
-
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      new: { variant: "secondary" as const, label: "جديد", className: "" },
-      in_progress: { variant: "default" as const, label: "قيد المعالجة", className: "" },
-      done: { variant: "outline" as const, label: "مكتمل", className: "border-green-500 text-green-700 bg-green-50" },
-      rejected: { variant: "destructive" as const, label: "مرفوض", className: "" },
-    };
-
-    const config = variants[status as keyof typeof variants];
-    return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
-  };
 
   return (
     <div className="space-y-6">
@@ -107,6 +212,22 @@ const RequestDetails = () => {
               <div>
                 <p className="text-sm text-muted-foreground">الحالة</p>
                 {getStatusBadge(request.status)}
+                <div className="mt-2">
+                  <Select
+                    value={(requestStatus || request.status) as TrackingStatus}
+                    onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="تغيير الحالة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="new">جديد</SelectItem>
+                      <SelectItem value="in_progress">قيد المعالجة</SelectItem>
+                      <SelectItem value="done">مكتمل</SelectItem>
+                      <SelectItem value="rejected">مرفوض</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -120,17 +241,26 @@ const RequestDetails = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {logsLoading ? (
-              <Skeleton className="h-64" />
-            ) : logs && logs.length > 0 ? (
-              <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+              <Wifi className={cn("h-4 w-4", socketStatus === "connected" ? "text-green-500" : "text-muted-foreground")} />
+              <span>{socketStatus === "connected" ? "متصل بالبث الحي" : socketStatus === "connecting" ? "جاري الاتصال..." : "غير متصل"}</span>
+              {requestStatus && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <PlugZap className="h-3 w-3" />
+                  <span>حالة الطلب: </span>
+                  {getStatusBadge(requestStatus)}
+                </div>
+              )}
+            </div>
+            {logs && logs.length > 0 ? (
+              <div className="space-y-4 max-h-[420px] overflow-auto pr-1">
                 {logs.map((log) => (
-                  <div key={log.id} className="p-4 border rounded-lg space-y-2">
+                  <div key={log.id} className="p-4 border rounded-lg space-y-2 bg-white/70 backdrop-blur">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium">موقع #{log.id}</p>
                         <p className="text-xs text-muted-foreground" dir="ltr">
-                          {format(new Date(log.captured_at), "dd MMM HH:mm", { locale: ar })}
+                          {format(new Date(log.captured_at), "dd MMM yyyy HH:mm", { locale: ar })}
                         </p>
                       </div>
                       <Badge variant="outline" className="text-xs">
@@ -155,13 +285,41 @@ const RequestDetails = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-muted-foreground py-8">
-                لا توجد سجلات تتبع لهذا الطلب
-              </p>
+              <Skeleton className="h-64" />
             )}
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            الخريطة الحية
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[420px] rounded-lg overflow-hidden border">
+            <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {logs.map((log) => (
+                <Marker
+                  key={log.id}
+                  position={[log.latitude, log.longitude]}
+                  icon={leafletIcon}
+                />
+              ))}
+              {logs.length > 1 && (
+                <Polyline
+                  positions={logs.map((l) => [l.latitude, l.longitude]) as [number, number][]}
+                  color="#0f6a4f"
+                  weight={3}
+                />
+              )}
+            </MapContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

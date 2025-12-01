@@ -19,7 +19,11 @@ interface RequestsTableProps {
 const getStatusBadge = (status: TrackingRequest["status"]) => {
   const variants = {
     new: { variant: "secondary" as const, label: "جديد", className: "" },
-    in_progress: { variant: "default" as const, label: "قيد المعالجة", className: "" },
+    in_progress: {
+      variant: "outline" as const,
+      label: "قيد المعالجة",
+      className: "border-blue-500 text-blue-700 bg-blue-50",
+    },
     done: { variant: "outline" as const, label: "مكتمل", className: "border-green-500 text-green-700 bg-green-50" },
     rejected: { variant: "destructive" as const, label: "مرفوض", className: "" },
   };

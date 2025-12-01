@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (token: string, user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isHydrating: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,23 +19,41 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isHydrating, setIsHydrating] = useState(true);
 
   useEffect(() => {
-    // Load auth from localStorage on mount
+    // Load auth from localStorage on mount with safe parsing
     const storedToken = localStorage.getItem("auth_token");
     const storedUser = localStorage.getItem("auth_user");
-    
-    if (storedToken && storedUser) {
+
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
     }
+
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+      } catch (error) {
+        console.warn("Failed to parse stored auth_user, clearing it", error);
+        localStorage.removeItem("auth_user");
+      }
+    }
+
+    setIsHydrating(false);
   }, []);
 
   const login = (newToken: string, newUser: User) => {
     setToken(newToken);
-    setUser(newUser);
     localStorage.setItem("auth_token", newToken);
-    localStorage.setItem("auth_user", JSON.stringify(newUser));
+
+    if (newUser) {
+      setUser(newUser);
+      localStorage.setItem("auth_user", JSON.stringify(newUser));
+    } else {
+      setUser(null);
+      localStorage.removeItem("auth_user");
+    }
   };
 
   const logout = () => {
@@ -52,6 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         isAuthenticated: !!token,
+        isHydrating,
       }}
     >
       {children}

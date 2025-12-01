@@ -8,7 +8,9 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Requests from "./pages/Requests";
 import RequestDetails from "./pages/RequestDetails";
+import Beneficiaries from "./pages/Beneficiaries";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,13 +28,15 @@ const App = () => (
             <Route
               element={
                 <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/requests/:id" element={<RequestDetails />} />
-            </Route>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/beneficiaries" element={<Beneficiaries />} />
+          <Route path="/requests" element={<Requests />} />
+          <Route path="/requests/:id" element={<RequestDetails />} />
+        </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

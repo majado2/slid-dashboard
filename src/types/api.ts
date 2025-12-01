@@ -51,3 +51,40 @@ export interface LoginResponse {
     name: string;
   };
 }
+
+export interface Beneficiary {
+  id?: number;
+  name: string;
+  mobile: string;
+  national_id: string;
+  password?: string;
+  latitude?: number;
+  longitude?: number;
+  accuracy_m?: number;
+  altitude_m?: number;
+  location_verification?: "active" | "inactive";
+}
+
+export interface TrackingRequestFull {
+  request: TrackingRequest;
+  logs: TrackingLog[];
+}
+
+export interface CreateTrackingRequest {
+  beneficiary_id: number;
+  authority_id: number;
+  channel: "API" | "SMS";
+}
+
+export interface BeneficiaryOption {
+  id: number;
+  name: string;
+  national_id: string;
+}
+
+export interface AuthorityOption {
+  id: number;
+  name: string;
+}
+
+export type TrackingStatus = "new" | "in_progress" | "done" | "rejected";

@@ -1,4 +1,4 @@
-import { Home, FileText, Users, Building2, BarChart3, Settings, LogOut } from "lucide-react";
+import { Home, FileText, Users, BarChart3, Settings, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,10 +21,10 @@ import {
 
 const menuItems = [
   { title: "لوحة التحكم", url: "/dashboard", icon: Home },
-  { title: "الطلبات", url: "/dashboard", icon: FileText },
-  { title: "المستفيدين", url: "/dashboard", icon: Users },
-  { title: "الجهات", url: "/dashboard", icon: Building2 },
-  { title: "الإحصائيات", url: "/dashboard", icon: BarChart3 },
+  { title: "المستفيدون", url: "/beneficiaries", icon: Users },
+  { title: "الطلبات", url: "/requests", icon: FileText },
+  // { title: "الجهات", url: "/authorities", icon: Building2 },
+  // { title: "الإحصائيات", url: "/stats", icon: BarChart3 },
 ];
 
 export function AppSidebar() {
@@ -43,7 +43,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" side="right">
       <SidebarHeader className="border-b border-sidebar-border p-4">
         {!collapsed && (
           <div className="flex items-center gap-3">

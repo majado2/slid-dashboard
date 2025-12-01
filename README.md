@@ -71,3 +71,24 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## طريقة التشغيل محلياً
+1) تأكد من وجود Node 18+.
+2) ثبّت الاعتمادات (يوجد تعارض peer):
+```sh
+npm install --legacy-peer-deps
+```
+3) شغّل السيرفر المحلي:
+```sh
+npm run dev
+```
+4) افتح المتصفح على http://localhost:5173
+
+### إعداد الاتصال بالـ API
+- عنوان الـ API الحالي مضبوط على `https://slid.ethra2.com` في `src/lib/api.ts`. إذا كنت تعمل ضد خادم محلي (مثلاً `http://127.0.0.1:8000`) حدّث قيمة `API_BASE_URL`، وسيُحوّل WebSocket تلقائياً إلى `ws://...`.
+- البيانات التجريبية في `useMockAPI`، إذا أردت تعطيل الـ mock تأكد من أن `useMockAPI = false`.
+
+### الاختبارات السريعة
+- تسجيل الدخول: جوال `0588888888` وكلمة مرور `password` (أو حساب تجريبي ثانٍ حسب الدليل).
+- إنشاء طلب تتبع: من صفحة "طلبات التتبع" اضغط "إضافة طلب تتبع"، اختر مستفيداً وجهة من القوائم، وحدد القناة (API/SMS).
+- عرض الطلب مع الخريطة: افتح أي طلب من الجدول، ستجد السجلات والبث الحي عبر WebSocket والخريطة التفاعلية.
