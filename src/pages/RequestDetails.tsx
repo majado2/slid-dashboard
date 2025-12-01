@@ -32,6 +32,10 @@ const RequestDetails = () => {
   const [requestStatus, setRequestStatus] = useState<string | null>(null);
 
   const request = data?.request;
+  const beneficiaryName = data?.beneficiary_name;
+  const beneficiaryNationalId = data?.beneficiary_national_id;
+  const authorityName = data?.authority_name;
+  const authorityLogo = data?.authority_logo;
   const logs = useMemo(() => {
     const baseLogs = data?.logs || [];
     return [...baseLogs, ...liveLogs].sort(
@@ -180,15 +184,30 @@ const RequestDetails = () => {
             <div className="flex items-center gap-3">
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="text-sm text-muted-foreground">رقم المستفيد</p>
-                <p className="font-medium">{request.beneficiary_id}</p>
+                <p className="text-sm text-muted-foreground">المستفيد</p>
+                <p className="font-medium">
+                  {beneficiaryName ? beneficiaryName : `مستفيد #${request.beneficiary_id}`}
+                </p>
+                {beneficiaryNationalId && (
+                  <p className="text-xs text-muted-foreground" dir="ltr">
+                    الهوية: {beneficiaryNationalId}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Building2 className="h-5 w-5 text-muted-foreground" />
+              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                {authorityLogo ? (
+                  <img src={authorityLogo} alt="شعار الجهة" className="h-full w-full object-contain" />
+                ) : (
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
+                )}
+              </div>
               <div>
-                <p className="text-sm text-muted-foreground">رقم الجهة</p>
-                <p className="font-medium">{request.authority_id}</p>
+                <p className="text-sm text-muted-foreground">الجهة</p>
+                <p className="font-medium">
+                  {authorityName ? authorityName : `جهة #${request.authority_id}`}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">

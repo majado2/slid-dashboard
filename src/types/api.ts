@@ -68,6 +68,10 @@ export interface Beneficiary {
 export interface TrackingRequestFull {
   request: TrackingRequest;
   logs: TrackingLog[];
+  beneficiary_name?: string;
+  beneficiary_national_id?: string;
+  authority_name?: string;
+  authority_logo?: string;
 }
 
 export interface CreateTrackingRequest {
