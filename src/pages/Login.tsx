@@ -136,17 +136,6 @@ const Login = () => {
                 مستخدم جديد؟
               </div>
 
-              <div className="p-4 bg-[#e4f3ec] rounded-lg text-sm text-[#0f6a4f] border border-[#b4e2d3]">
-                <p className="text-center mb-2">بيانات تجريبية</p>
-                <div className="flex justify-center gap-6 text-xs">
-                  <span>
-                    الجوال: <span className="font-mono">0588888888</span>
-                  </span>
-                  <span>
-                    كلمة المرور: <span className="font-mono">password</span>
-                  </span>
-                </div>
-              </div>
             </CardContent>
           </Card>
           <div className="w-full xl:w-auto flex-1 flex flex-col items-start xl:items-center gap-6 text-white drop-shadow-md">
