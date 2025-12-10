@@ -406,12 +406,46 @@ const RequestDetails = () => {
         <Card className="bg-card/50 backdrop-blur border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Navigation className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Activity className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">عدد النقاط</p>
-                <p className="font-semibold text-xl">{logs.length}</p>
+                <p className="text-xs text-muted-foreground mb-1">تغيير الحالة</p>
+                <Select
+                  value={currentStatus as TrackingStatus}
+                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                  disabled={statusMutation.isPending}
+                >
+                  <SelectTrigger className="w-full h-8 text-sm">
+                    <SelectValue placeholder="اختر الحالة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+                        جديد
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="in_progress">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        قيد التتبع
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="done">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        مكتمل
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="rejected">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                        مرفوض
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
@@ -475,53 +509,6 @@ const RequestDetails = () => {
               />
             )}
           </MapContainer>
-
-          {/* Status Change Overlay - Left Side */}
-          <div className="absolute top-16 left-4 z-[1000]">
-            <div className="bg-background/95 backdrop-blur rounded-lg border shadow-lg p-3 w-56">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Activity className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium">حالة البلاغ</span>
-              </div>
-              <Select
-                value={currentStatus as TrackingStatus}
-                onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                disabled={statusMutation.isPending}
-              >
-                <SelectTrigger className="w-full h-9 text-sm">
-                  <SelectValue placeholder="اختر الحالة" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="new">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-amber-500"></span>
-                      جديد
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="in_progress">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
-                      قيد التتبع
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="done">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                      مكتمل
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="rejected">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                      مرفوض
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
 
           {/* Current Location Overlay - Bottom Left */}
           {lastLog && (
