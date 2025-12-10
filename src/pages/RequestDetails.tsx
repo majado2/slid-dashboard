@@ -313,72 +313,30 @@ const RequestDetails = () => {
   const lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative">
-      {/* Full Screen Map Background */}
-      <div className="absolute inset-0 z-0">
-        <MapContainer 
-          center={center} 
-          zoom={14} 
-          style={{ height: "100%", width: "100%" }}
-          className="z-0"
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {logs.map((log, index) => (
-            <Marker
-              key={log.id}
-              position={[log.latitude, log.longitude]}
-              icon={index === logs.length - 1 ? currentLocationIcon : leafletIcon}
-            >
-              <Popup>
-                <div className="text-right font-sans p-1" dir="rtl">
-                  <p className="font-bold text-base mb-1">نقطة #{index + 1}</p>
-                  <p className="text-xs text-gray-600 mb-2">
-                    {format(new Date(log.captured_at), "dd/MM/yyyy HH:mm:ss", { locale: ar })}
-                  </p>
-                  <div className="space-y-1 text-xs">
-                    <p>دقة: <span className="font-mono">{log.accuracy_m}م</span></p>
-                    <p>ارتفاع: <span className="font-mono">{log.altitude_m}م</span></p>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-          {logs.length > 1 && (
-            <Polyline
-              positions={logs.map((l) => [l.latitude, l.longitude] as L.LatLngTuple)}
-              pathOptions={{ 
-                color: "#10b981", 
-                weight: 4,
-                opacity: 0.9,
-                dashArray: "8, 12"
-              }}
-            />
-          )}
-        </MapContainer>
-      </div>
-
-      {/* Top Header Overlay */}
-      <div className="absolute top-0 left-0 right-0 z-[1000] p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="space-y-5 p-4 lg:p-6">
+        {/* Header Section */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => navigate("/dashboard")} 
-              className="shrink-0 h-12 w-12 rounded-xl border border-border/30 bg-background/60 backdrop-blur-xl hover:bg-background/80 transition-all duration-300"
+              className="shrink-0 h-12 w-12 rounded-xl border border-border/50 bg-card/50 backdrop-blur hover:bg-card transition-all duration-300 hover:scale-105"
             >
               <ArrowRight className="h-5 w-5" />
             </Button>
-            <div className="bg-background/60 backdrop-blur-xl rounded-xl px-5 py-3 border border-border/30">
+            <div className="space-y-1">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-xl lg:text-2xl font-bold text-foreground/90">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                   بلاغ طوارئ #{request.id}
                 </h1>
                 <Badge 
                   variant="outline" 
                   className={cn(
-                    "text-sm px-3 py-1 font-semibold",
+                    "text-sm px-4 py-1.5 font-semibold transition-all duration-300 shadow-lg",
                     statusConfig.className,
+                    statusConfig.glow,
                     isLive && "animate-pulse"
                   )}
                 >
@@ -386,8 +344,8 @@ const RequestDetails = () => {
                   {statusConfig.label}
                 </Badge>
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                <Clock className="h-3 w-3" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
                 <span>{format(new Date(request.created_at), "EEEE، dd MMMM yyyy - HH:mm", { locale: ar })}</span>
               </div>
             </div>
@@ -395,272 +353,370 @@ const RequestDetails = () => {
           
           {/* Live Connection Status */}
           <div className={cn(
-            "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-500 border backdrop-blur-xl",
+            "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg",
             socketStatus === "connected" 
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-emerald-500/10" 
               : socketStatus === "connecting"
-              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-              : "bg-background/60 text-muted-foreground border-border/30"
+              ? "bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10"
+              : "bg-card/50 text-muted-foreground border-border/50"
           )}>
             {socketStatus === "connected" ? (
               <>
                 <div className="relative">
-                  <Wifi className="h-4 w-4" />
+                  <Wifi className="h-5 w-5" />
                   <div className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
                 </div>
                 <span>البث الحي متصل</span>
+                <Signal className="h-4 w-4 animate-pulse" />
               </>
             ) : socketStatus === "connecting" ? (
               <>
-                <Wifi className="h-4 w-4 animate-pulse" />
+                <Wifi className="h-5 w-5 animate-pulse" />
                 <span>جاري الاتصال...</span>
+                <div className="h-2 w-2 bg-amber-400 rounded-full animate-bounce" />
               </>
             ) : (
               <>
-                <WifiOff className="h-4 w-4" />
+                <WifiOff className="h-5 w-5" />
                 <span>غير متصل</span>
               </>
             )}
           </div>
         </div>
-      </div>
 
-      {/* Info Cards Overlay - Top Below Header */}
-      <div className="absolute top-24 lg:top-20 left-4 right-4 z-[1000]">
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        {/* Info Cards Grid */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Beneficiary Card */}
-          <div className="bg-background/50 backdrop-blur-xl rounded-xl border border-border/20 p-3 transition-all duration-300 hover:bg-background/60">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="h-4 w-4 text-primary/70" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardContent className="relative p-5">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <User className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
+                    <Eye className="h-2.5 w-2.5 text-primary-foreground" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground font-medium mb-1">المستفيد</p>
+                  <p className="font-bold text-lg truncate">
+                    {beneficiaryName || `مستفيد #${request.beneficiary_id}`}
+                  </p>
+                  {beneficiaryNationalId && (
+                    <p className="text-xs text-muted-foreground font-mono mt-1 bg-muted/50 px-2 py-0.5 rounded w-fit">{beneficiaryNationalId}</p>
+                  )}
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-muted-foreground/70 mb-0.5">المستفيد</p>
-                <p className="font-semibold text-sm truncate text-foreground/80">
-                  {beneficiaryName || `مستفيد #${request.beneficiary_id}`}
-                </p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Authority Card */}
-          <div className="bg-background/50 backdrop-blur-xl rounded-xl border border-border/20 p-3 transition-all duration-300 hover:bg-background/60">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 overflow-hidden">
-                {authorityLogo ? (
-                  <img src={authorityLogo} alt="شعار الجهة" className="h-6 w-6 object-contain" />
-                ) : (
-                  <Building2 className="h-4 w-4 text-primary/70" />
-                )}
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardContent className="relative p-5">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                    {authorityLogo ? (
+                      <img src={authorityLogo} alt="شعار الجهة" className="h-8 w-8 object-contain" />
+                    ) : (
+                      <Building2 className="h-6 w-6 text-primary" />
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground font-medium mb-1">الجهة المختصة</p>
+                  <p className="font-bold text-lg truncate">
+                    {authorityName || `جهة #${request.authority_id}`}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-muted-foreground/70 mb-0.5">الجهة المختصة</p>
-                <p className="font-semibold text-sm truncate text-foreground/80">
-                  {authorityName || `جهة #${request.authority_id}`}
-                </p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Channel Card */}
-          <div className="bg-background/50 backdrop-blur-xl rounded-xl border border-border/20 p-3 transition-all duration-300 hover:bg-background/60">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Radio className="h-4 w-4 text-primary/70" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardContent className="relative p-5">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <Radio className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <Zap className="h-2.5 w-2.5 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground font-medium mb-1">قناة الإرسال</p>
+                  <Badge variant="secondary" className="font-mono text-sm px-3 py-1">{request.channel}</Badge>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-muted-foreground/70 mb-0.5">قناة الإرسال</p>
-                <Badge variant="secondary" className="font-mono text-xs px-2 py-0.5 bg-muted/50">{request.channel}</Badge>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Status Change Card */}
-          <div className="bg-background/50 backdrop-blur-xl rounded-xl border border-border/20 p-3 transition-all duration-300 hover:bg-background/60">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Activity className="h-4 w-4 text-primary/70" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <CardContent className="relative p-5">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <Activity className="h-6 w-6 text-primary" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground font-medium mb-2">تغيير الحالة</p>
+                  <Select
+                    value={currentStatus as TrackingStatus}
+                    onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                    disabled={statusMutation.isPending}
+                  >
+                    <SelectTrigger className="w-full h-9 text-sm bg-background/50 border-border/50 hover:bg-background transition-colors">
+                      <SelectValue placeholder="اختر الحالة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="new">
+                        <span className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
+                          جديد
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="in_progress">
+                        <span className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse shadow-sm shadow-blue-500/50"></span>
+                          قيد التتبع
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="done">
+                        <span className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+                          مكتمل
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="rejected">
+                        <span className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></span>
+                          مرفوض
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-muted-foreground/70 mb-1">تغيير الحالة</p>
-                <Select
-                  value={currentStatus as TrackingStatus}
-                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                  disabled={statusMutation.isPending}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Map Section */}
+        <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur shadow-2xl">
+          <div className="h-[650px] relative">
+            {/* Map Header Overlay */}
+            <div className="absolute top-0 left-0 right-0 z-[1000] p-4 bg-gradient-to-b from-background/95 via-background/70 to-transparent">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                  <div className="relative">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    {isLive && <div className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-ping" />}
+                  </div>
+                  <span className="font-bold text-sm">خريطة التتبع الحية</span>
+                  {isLive && (
+                    <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse">
+                      LIVE
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  {logs.length > 0 && (
+                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                      <Navigation2 className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">{logs.length}</span>
+                      <span className="text-xs text-muted-foreground">نقطة</span>
+                    </div>
+                  )}
+                  {lastLog && (
+                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">آخر تحديث:</span>
+                      <span className="font-mono text-sm font-bold">{format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Map */}
+            <MapContainer 
+              center={center} 
+              zoom={14} 
+              style={{ height: "100%", width: "100%" }}
+              className="z-0"
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {logs.map((log, index) => (
+                <Marker
+                  key={log.id}
+                  position={[log.latitude, log.longitude]}
+                  icon={index === logs.length - 1 ? currentLocationIcon : leafletIcon}
                 >
-                  <SelectTrigger className="w-full h-7 text-xs bg-background/50 border-border/30 hover:bg-background/70 transition-colors">
-                    <SelectValue placeholder="اختر الحالة" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-amber-500"></span>
-                        جديد
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="in_progress">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        قيد التتبع
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="done">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                        مكتمل
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="rejected">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                        مرفوض
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Map Info Overlay - Top Right */}
-      <div className="absolute top-44 lg:top-36 right-4 z-[1000] flex flex-col gap-2">
-        {logs.length > 0 && (
-          <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl rounded-lg px-3 py-2 border border-border/20">
-            <Navigation2 className="h-4 w-4 text-primary/70" />
-            <span className="text-sm font-semibold text-foreground/80">{logs.length}</span>
-            <span className="text-xs text-muted-foreground/70">نقطة</span>
-          </div>
-        )}
-        {lastLog && (
-          <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl rounded-lg px-3 py-2 border border-border/20">
-            <Clock className="h-4 w-4 text-muted-foreground/70" />
-            <span className="text-xs text-muted-foreground/70">آخر تحديث:</span>
-            <span className="font-mono text-sm font-semibold text-foreground/80">{format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Current Location Overlay - Bottom Left */}
-      {lastLog && (
-        <div className="absolute bottom-4 left-4 z-[1000] animate-fade-in">
-          <div className="bg-background/50 backdrop-blur-xl rounded-xl border border-red-500/20 p-4 min-w-[260px]">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="h-12 w-12 rounded-xl bg-red-500/10 flex items-center justify-center">
-                  <Target className="h-6 w-6 text-red-500/70" />
-                </div>
-                <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-ping" />
-                <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm mb-1 text-foreground/80">الموقع الحالي</p>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-                    <Compass className="h-3 w-3" />
-                    <span className="font-mono">{lastLog.latitude.toFixed(6)}, {lastLog.longitude.toFixed(6)}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="text-muted-foreground/70">دقة: <span className="font-mono text-foreground/70">{lastLog.accuracy_m}م</span></span>
-                    <span className="text-muted-foreground/70">ارتفاع: <span className="font-mono text-foreground/70">{lastLog.altitude_m}م</span></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Logs Timeline Overlay - Right Side */}
-      <div className="absolute top-56 lg:top-48 bottom-4 right-4 z-[1000] w-72">
-        <div className="h-full bg-background/50 backdrop-blur-xl rounded-xl border border-border/20 flex flex-col overflow-hidden">
-          <div className="p-3 border-b border-border/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Activity className="h-3.5 w-3.5 text-primary/70" />
-                </div>
-                <span className="font-semibold text-sm text-foreground/80">سجل التتبع</span>
-              </div>
-              <Badge variant="secondary" className="font-mono text-xs bg-muted/50">{logs.length}</Badge>
-            </div>
-          </div>
-          <ScrollArea className="flex-1">
-            {logs.length > 0 ? (
-              <div className="p-2 space-y-2">
-                {[...logs].reverse().map((log, idx) => {
-                  const isLatest = idx === 0;
-                  return (
-                    <div 
-                      key={log.id} 
-                      className={cn(
-                        "relative p-2.5 rounded-lg border transition-all duration-300",
-                        isLatest 
-                          ? "bg-primary/5 border-primary/20" 
-                          : "bg-background/30 border-border/20 hover:bg-background/50"
-                      )}
-                    >
-                      {isLatest && (
-                        <div className="absolute -top-1 -right-1">
-                          <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className={cn(
-                            "h-6 w-6 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0",
-                            isLatest 
-                              ? "bg-primary/20 text-primary" 
-                              : "bg-muted/50 text-muted-foreground"
-                          )}>
-                            {logs.length - idx}
-                          </div>
-                          <div>
-                            <p className="text-xs font-semibold text-foreground/80">
-                              {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground/70">
-                              {format(new Date(log.captured_at), "dd/MM/yyyy", { locale: ar })}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge 
-                          variant="outline" 
-                          className={cn(
-                            "text-[9px] shrink-0 px-1.5 py-0.5",
-                            isLatest ? "border-primary/30 text-primary/80" : "border-border/30 text-muted-foreground/70"
-                          )}
-                        >
-                          {log.accuracy_m}م
-                        </Badge>
+                  <Popup>
+                    <div className="text-right font-sans p-1" dir="rtl">
+                      <p className="font-bold text-base mb-1">نقطة #{index + 1}</p>
+                      <p className="text-xs text-gray-600 mb-2">
+                        {format(new Date(log.captured_at), "dd/MM/yyyy HH:mm:ss", { locale: ar })}
+                      </p>
+                      <div className="space-y-1 text-xs">
+                        <p>دقة: <span className="font-mono">{log.accuracy_m}م</span></p>
+                        <p>ارتفاع: <span className="font-mono">{log.altitude_m}م</span></p>
                       </div>
-                      <div className="mt-2 pt-2 border-t border-border/20 grid grid-cols-2 gap-1 text-[10px]">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground/60">العرض:</span>
-                          <span className="font-mono text-foreground/70">{log.latitude.toFixed(5)}</span>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+              {logs.length > 1 && (
+                <Polyline
+                  positions={logs.map((l) => [l.latitude, l.longitude] as L.LatLngTuple)}
+                  pathOptions={{ 
+                    color: "#10b981", 
+                    weight: 4,
+                    opacity: 0.9,
+                    dashArray: "8, 12"
+                  }}
+                />
+              )}
+            </MapContainer>
+
+            {/* Current Location Overlay - Bottom Left */}
+            {lastLog && (
+              <div className="absolute bottom-4 left-4 z-[1000] animate-fade-in">
+                <div className="bg-background/95 backdrop-blur-xl rounded-2xl border border-red-500/30 shadow-2xl shadow-red-500/10 p-4 min-w-[280px]">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/20 flex items-center justify-center">
+                        <Target className="h-7 w-7 text-red-500" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full animate-ping" />
+                      <div className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-base mb-1">الموقع الحالي</p>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Compass className="h-3.5 w-3.5" />
+                          <span className="font-mono">{lastLog.latitude.toFixed(6)}, {lastLog.longitude.toFixed(6)}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground/60">الطول:</span>
-                          <span className="font-mono text-foreground/70">{log.longitude.toFixed(5)}</span>
+                        <div className="flex items-center gap-4 text-xs">
+                          <span className="text-muted-foreground">دقة: <span className="font-mono text-foreground">{lastLog.accuracy_m}م</span></span>
+                          <span className="text-muted-foreground">ارتفاع: <span className="font-mono text-foreground">{lastLog.altitude_m}م</span></span>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                <MapPin className="h-10 w-10 text-muted-foreground/30 mb-2" />
-                <p className="font-medium text-sm text-muted-foreground/60">لا توجد نقاط تتبع بعد</p>
-                <p className="text-xs text-muted-foreground/50 mt-1">ستظهر النقاط هنا عند بدء التتبع</p>
+                  </div>
+                </div>
               </div>
             )}
-          </ScrollArea>
-        </div>
+
+            {/* Logs Timeline Overlay - Right Side */}
+            <div className="absolute top-20 bottom-4 right-4 z-[1000] w-80">
+              <div className="h-full bg-background/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl flex flex-col overflow-hidden">
+                <div className="p-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-primary" />
+                      </div>
+                      <span className="font-bold">سجل التتبع</span>
+                    </div>
+                    <Badge variant="secondary" className="font-mono">{logs.length}</Badge>
+                  </div>
+                </div>
+                <ScrollArea className="flex-1">
+                  {logs.length > 0 ? (
+                    <div className="p-3 space-y-2">
+                      {[...logs].reverse().map((log, idx) => {
+                        const isLatest = idx === 0;
+                        return (
+                          <div 
+                            key={log.id} 
+                            className={cn(
+                              "relative p-3 rounded-xl border transition-all duration-300 hover:scale-[1.02]",
+                              isLatest 
+                                ? "bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-lg shadow-primary/5" 
+                                : "bg-card/50 border-border/50 hover:bg-card hover:border-border"
+                            )}
+                          >
+                            {isLatest && (
+                              <div className="absolute -top-1.5 -right-1.5">
+                                <span className="relative flex h-4 w-4">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-4 w-4 bg-primary shadow-lg shadow-primary/50"></span>
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <div className={cn(
+                                  "h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
+                                  isLatest 
+                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" 
+                                    : "bg-muted text-muted-foreground"
+                                )}>
+                                  {logs.length - idx}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-bold">
+                                    {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
+                                  </p>
+                                  <p className="text-[11px] text-muted-foreground">
+                                    {format(new Date(log.captured_at), "dd/MM/yyyy", { locale: ar })}
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge 
+                                variant={isLatest ? "default" : "outline"} 
+                                className={cn(
+                                  "text-[10px] shrink-0 px-2",
+                                  isLatest && "bg-primary/20 text-primary border-primary/30"
+                                )}
+                              >
+                                {log.accuracy_m}م
+                              </Badge>
+                            </div>
+                            <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-2 text-[11px]">
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">العرض:</span>
+                                <span className="font-mono font-medium">{log.latitude.toFixed(5)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">الطول:</span>
+                                <span className="font-mono font-medium">{log.longitude.toFixed(5)}</span>
+                              </div>
+                              <div className="flex justify-between col-span-2">
+                                <span className="text-muted-foreground">الارتفاع:</span>
+                                <span className="font-mono font-medium">{log.altitude_m}م</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                      <div className="relative mb-4">
+                        <div className="absolute inset-0 bg-muted/50 rounded-full blur-xl" />
+                        <MapPin className="relative h-12 w-12 text-muted-foreground/50" />
+                      </div>
+                      <p className="font-semibold text-muted-foreground">لا توجد نقاط تتبع بعد</p>
+                      <p className="text-xs text-muted-foreground mt-2">ستظهر النقاط هنا عند بدء التتبع</p>
+                    </div>
+                  )}
+                </ScrollArea>
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );
