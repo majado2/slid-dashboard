@@ -238,28 +238,28 @@ const RequestDetails = () => {
         className: "bg-amber-500/20 text-amber-400 border-amber-500/50",
         icon: AlertTriangle,
         color: "text-amber-400",
-        glow: "shadow-amber-500/25"
+        glow: "shadow-[0_0_20px_rgba(245,158,11,0.5),0_0_40px_rgba(245,158,11,0.3)]"
       },
       in_progress: {
         label: "قيد التتبع",
         className: "bg-blue-500/20 text-blue-400 border-blue-500/50",
         icon: Activity,
         color: "text-blue-400",
-        glow: "shadow-blue-500/25"
+        glow: "shadow-[0_0_20px_rgba(59,130,246,0.5),0_0_40px_rgba(59,130,246,0.3)]"
       },
       done: { 
         label: "مكتمل", 
         className: "bg-emerald-500/20 text-emerald-400 border-emerald-500/50",
         icon: Target,
         color: "text-emerald-400",
-        glow: "shadow-emerald-500/25"
+        glow: "shadow-[0_0_20px_rgba(16,185,129,0.5),0_0_40px_rgba(16,185,129,0.3)]"
       },
       rejected: { 
         label: "مرفوض", 
         className: "bg-red-500/20 text-red-400 border-red-500/50",
         icon: AlertTriangle,
         color: "text-red-400",
-        glow: "shadow-red-500/25"
+        glow: "shadow-[0_0_20px_rgba(239,68,68,0.5),0_0_40px_rgba(239,68,68,0.3)]"
       },
     };
     return configs[status as keyof typeof configs] || { 
@@ -361,27 +361,27 @@ const RequestDetails = () => {
           
           {/* Live Connection Status */}
           <div className={cn(
-            "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg",
+            "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border",
             socketStatus === "connected" 
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-emerald-500/10" 
+              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/50 shadow-[0_0_25px_rgba(16,185,129,0.4),0_0_50px_rgba(16,185,129,0.2)]" 
               : socketStatus === "connecting"
-              ? "bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10"
-              : "bg-card/50 text-muted-foreground border-border/50"
+              ? "bg-amber-500/10 text-amber-400 border-amber-500/50 shadow-[0_0_25px_rgba(245,158,11,0.4),0_0_50px_rgba(245,158,11,0.2)]"
+              : "bg-card/50 text-muted-foreground border-border/50 shadow-lg"
           )}>
             {socketStatus === "connected" ? (
               <>
                 <div className="relative">
-                  <Wifi className="h-5 w-5" />
-                  <div className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
+                  <Wifi className="h-5 w-5 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-emerald-400 rounded-full animate-ping shadow-[0_0_10px_rgba(16,185,129,1)]" />
                 </div>
-                <span>البث الحي متصل</span>
-                <Signal className="h-4 w-4 animate-pulse" />
+                <span className="drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">البث الحي متصل</span>
+                <Signal className="h-4 w-4 animate-pulse drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
               </>
             ) : socketStatus === "connecting" ? (
               <>
-                <Wifi className="h-5 w-5 animate-pulse" />
-                <span>جاري الاتصال...</span>
-                <div className="h-2 w-2 bg-amber-400 rounded-full animate-bounce" />
+                <Wifi className="h-5 w-5 animate-pulse drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+                <span className="drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]">جاري الاتصال...</span>
+                <div className="h-3 w-3 bg-amber-400 rounded-full animate-bounce shadow-[0_0_10px_rgba(245,158,11,1)]" />
               </>
             ) : (
               <>
@@ -395,21 +395,22 @@ const RequestDetails = () => {
         {/* Info Cards Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Beneficiary Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-500 hover:shadow-[0_0_30px_rgba(var(--primary),0.3),0_20px_40px_rgba(0,0,0,0.3)] hover:border-primary/50 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardContent className="relative p-5">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <User className="h-6 w-6 text-primary" />
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(var(--primary),0.5)]">
+                    <User className="h-6 w-6 text-primary drop-shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(var(--primary),0.8)]">
                     <Eye className="h-2.5 w-2.5 text-primary-foreground" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground font-medium mb-1">المستفيد</p>
-                  <p className="font-bold text-lg truncate">
+                  <p className="font-bold text-lg truncate group-hover:text-primary transition-colors duration-300">
                     {beneficiaryName || `مستفيد #${request.beneficiary_id}`}
                   </p>
                   {beneficiaryNationalId && (
@@ -421,22 +422,23 @@ const RequestDetails = () => {
           </Card>
 
           {/* Authority Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.3),0_20px_40px_rgba(0,0,0,0.3)] hover:border-blue-500/50 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-blue-500/10 to-blue-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardContent className="relative p-5">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-blue-500/10 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]">
                     {authorityLogo ? (
                       <img src={authorityLogo} alt="شعار الجهة" className="h-8 w-8 object-contain" />
                     ) : (
-                      <Building2 className="h-6 w-6 text-primary" />
+                      <Building2 className="h-6 w-6 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                     )}
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground font-medium mb-1">الجهة المختصة</p>
-                  <p className="font-bold text-lg truncate">
+                  <p className="font-bold text-lg truncate group-hover:text-blue-400 transition-colors duration-300">
                     {authorityName || `جهة #${request.authority_id}`}
                   </p>
                 </div>
@@ -445,34 +447,36 @@ const RequestDetails = () => {
           </Card>
 
           {/* Channel Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.3),0_20px_40px_rgba(0,0,0,0.3)] hover:border-emerald-500/50 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 via-emerald-500/10 to-emerald-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardContent className="relative p-5">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <Radio className="h-6 w-6 text-primary" />
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500/30 to-emerald-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                    <Radio className="h-6 w-6 text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse">
                     <Zap className="h-2.5 w-2.5 text-white" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground font-medium mb-1">قناة الإرسال</p>
-                  <Badge variant="secondary" className="font-mono text-sm px-3 py-1">{request.channel}</Badge>
+                  <Badge variant="secondary" className="font-mono text-sm px-3 py-1 shadow-[0_0_10px_rgba(16,185,129,0.3)]">{request.channel}</Badge>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Status Change Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.3),0_20px_40px_rgba(0,0,0,0.3)] hover:border-purple-500/50 hover:-translate-y-2">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-purple-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardContent className="relative p-5">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <Activity className="h-6 w-6 text-primary" />
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+                    <Activity className="h-6 w-6 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -519,36 +523,36 @@ const RequestDetails = () => {
         </div>
 
         {/* Main Map Section */}
-        <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur shadow-2xl">
+        <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur shadow-[0_0_50px_rgba(0,0,0,0.5),0_0_100px_rgba(var(--primary),0.1)]">
           <div className="h-[650px] relative">
             {/* Map Header Overlay */}
             <div className="absolute top-0 left-0 right-0 z-[1000] p-4 bg-gradient-to-b from-background/95 via-background/70 to-transparent">
               <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                <div className="flex items-center gap-3 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-[0_0_20px_rgba(239,68,68,0.2)] border border-red-500/30 hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-shadow duration-300">
                   <div className="relative">
-                    <MapPin className="h-5 w-5 text-primary" />
-                    {isLive && <div className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-ping" />}
+                    <MapPin className="h-5 w-5 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                    {isLive && <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-ping shadow-[0_0_10px_rgba(239,68,68,1)]" />}
                   </div>
                   <span className="font-bold text-sm">خريطة التتبع الحية</span>
                   {isLive && (
-                    <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse">
+                    <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.8)]">
                       LIVE
                     </Badge>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
                   {logs.length > 0 && (
-                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
-                      <Navigation2 className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-[0_0_15px_rgba(var(--primary),0.2)] border border-primary/30 hover:shadow-[0_0_25px_rgba(var(--primary),0.4)] transition-shadow duration-300">
+                      <Navigation2 className="h-4 w-4 text-primary drop-shadow-[0_0_6px_rgba(var(--primary),0.5)]" />
                       <span className="text-sm font-semibold">{logs.length}</span>
                       <span className="text-xs text-muted-foreground">نقطة</span>
                     </div>
                   )}
                   {lastLog && (
-                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
+                    <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-[0_0_15px_rgba(16,185,129,0.2)] border border-emerald-500/30 hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-shadow duration-300">
+                      <Clock className="h-4 w-4 text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
                       <span className="text-xs text-muted-foreground">آخر تحديث:</span>
-                      <span className="font-mono text-sm font-bold">{format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}</span>
+                      <span className="font-mono text-sm font-bold text-emerald-400">{format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}</span>
                     </div>
                   )}
                 </div>
@@ -599,25 +603,25 @@ const RequestDetails = () => {
             {/* Current Location Overlay - Bottom Left */}
             {lastLog && (
               <div className="absolute bottom-4 left-4 z-[1000] animate-fade-in">
-                <div className="bg-background/95 backdrop-blur-xl rounded-2xl border border-red-500/30 shadow-2xl shadow-red-500/10 p-4 min-w-[280px]">
+                <div className="bg-background/95 backdrop-blur-xl rounded-2xl border border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.3),0_20px_40px_rgba(0,0,0,0.4)] p-4 min-w-[280px] hover:shadow-[0_0_60px_rgba(239,68,68,0.5),0_20px_40px_rgba(0,0,0,0.5)] transition-shadow duration-500">
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/20 flex items-center justify-center">
-                        <Target className="h-7 w-7 text-red-500" />
+                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500/30 to-red-600/20 flex items-center justify-center shadow-[0_0_25px_rgba(239,68,68,0.4)]">
+                        <Target className="h-7 w-7 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
                       </div>
-                      <div className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full animate-ping" />
-                      <div className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full" />
+                      <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full animate-ping shadow-[0_0_15px_rgba(239,68,68,1)]" />
+                      <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,1)]" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-base mb-1">الموقع الحالي</p>
+                      <p className="font-bold text-base mb-1 text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">الموقع الحالي</p>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Compass className="h-3.5 w-3.5" />
+                          <Compass className="h-3.5 w-3.5 text-red-400" />
                           <span className="font-mono">{lastLog.latitude.toFixed(6)}, {lastLog.longitude.toFixed(6)}</span>
                         </div>
                         <div className="flex items-center gap-4 text-xs">
-                          <span className="text-muted-foreground">دقة: <span className="font-mono text-foreground">{lastLog.accuracy_m}م</span></span>
-                          <span className="text-muted-foreground">ارتفاع: <span className="font-mono text-foreground">{lastLog.altitude_m}م</span></span>
+                          <span className="text-muted-foreground">دقة: <span className="font-mono text-red-400">{lastLog.accuracy_m}م</span></span>
+                          <span className="text-muted-foreground">ارتفاع: <span className="font-mono text-red-400">{lastLog.altitude_m}م</span></span>
                         </div>
                       </div>
                     </div>
@@ -628,16 +632,16 @@ const RequestDetails = () => {
 
             {/* Logs Timeline Overlay - Right Side */}
             <div className="absolute top-20 bottom-4 right-4 z-[1000] w-80">
-              <div className="h-full bg-background/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl flex flex-col overflow-hidden">
-                <div className="p-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+              <div className="h-full bg-background/95 backdrop-blur-xl rounded-2xl border border-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.2),0_20px_40px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden hover:shadow-[0_0_60px_rgba(var(--primary),0.3),0_20px_40px_rgba(0,0,0,0.5)] transition-shadow duration-500">
+                <div className="p-4 border-b border-primary/20 bg-gradient-to-r from-primary/10 to-transparent">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Activity className="h-4 w-4 text-primary" />
+                      <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.4)]">
+                        <Activity className="h-4 w-4 text-primary drop-shadow-[0_0_6px_rgba(var(--primary),0.8)]" />
                       </div>
                       <span className="font-bold">سجل التتبع</span>
                     </div>
-                    <Badge variant="secondary" className="font-mono">{logs.length}</Badge>
+                    <Badge variant="secondary" className="font-mono shadow-[0_0_10px_rgba(var(--primary),0.3)]">{logs.length}</Badge>
                   </div>
                 </div>
                 <ScrollArea className="flex-1">
@@ -651,30 +655,30 @@ const RequestDetails = () => {
                             className={cn(
                               "relative p-3 rounded-xl border transition-all duration-300 hover:scale-[1.02]",
                               isLatest 
-                                ? "bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-lg shadow-primary/5" 
-                                : "bg-card/50 border-border/50 hover:bg-card hover:border-border"
+                                ? "bg-gradient-to-br from-primary/15 to-primary/5 border-primary/50 shadow-[0_0_20px_rgba(var(--primary),0.3)]" 
+                                : "bg-card/50 border-border/50 hover:bg-card hover:border-border hover:shadow-[0_0_15px_rgba(var(--primary),0.15)]"
                             )}
                           >
                             {isLatest && (
                               <div className="absolute -top-1.5 -right-1.5">
-                                <span className="relative flex h-4 w-4">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-4 w-4 bg-primary shadow-lg shadow-primary/50"></span>
+                                <span className="relative flex h-5 w-5">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 shadow-[0_0_10px_rgba(var(--primary),1)]"></span>
+                                  <span className="relative inline-flex rounded-full h-5 w-5 bg-primary shadow-[0_0_15px_rgba(var(--primary),0.8)]"></span>
                                 </span>
                               </div>
                             )}
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex items-center gap-3">
                                 <div className={cn(
-                                  "h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
+                                  "h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-all",
                                   isLatest 
-                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" 
+                                    ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.6)]" 
                                     : "bg-muted text-muted-foreground"
                                 )}>
                                   {logs.length - idx}
                                 </div>
                                 <div>
-                                  <p className="text-sm font-bold">
+                                  <p className={cn("text-sm font-bold", isLatest && "text-primary drop-shadow-[0_0_8px_rgba(var(--primary),0.5)]")}>
                                     {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
                                   </p>
                                   <p className="text-[11px] text-muted-foreground">
@@ -686,7 +690,7 @@ const RequestDetails = () => {
                                 variant={isLatest ? "default" : "outline"} 
                                 className={cn(
                                   "text-[10px] shrink-0 px-2",
-                                  isLatest && "bg-primary/20 text-primary border-primary/30"
+                                  isLatest && "bg-primary/20 text-primary border-primary/50 shadow-[0_0_10px_rgba(var(--primary),0.4)]"
                                 )}
                               >
                                 {log.accuracy_m}م
