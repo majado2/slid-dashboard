@@ -418,175 +418,174 @@ const RequestDetails = () => {
         </Card>
       </div>
 
-      {/* Main Content */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Map Section */}
-        <Card className="lg:col-span-2 overflow-hidden">
-          <CardHeader className="pb-2">
+      {/* Main Content - Full Width Map with Overlays */}
+      <Card className="overflow-hidden">
+        <div className="h-[600px] relative">
+          {/* Map Header Overlay */}
+          <div className="absolute top-0 left-0 right-0 z-[1000] p-4 bg-gradient-to-b from-background/90 to-transparent">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <MapPin className="h-5 w-5 text-primary" />
-                خريطة التتبع الحية
-              </CardTitle>
+              <div className="flex items-center gap-2 bg-background/80 backdrop-blur rounded-lg px-3 py-2 shadow-sm border">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span className="font-medium text-sm">خريطة التتبع الحية</span>
+              </div>
               {lastLog && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5" />
-                  آخر تحديث: {format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}
+                <div className="flex items-center gap-2 text-xs bg-background/80 backdrop-blur rounded-lg px-3 py-2 shadow-sm border">
+                  <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-muted-foreground">آخر تحديث:</span>
+                  <span className="font-mono">{format(new Date(lastLog.captured_at), "HH:mm:ss", { locale: ar })}</span>
                 </div>
               )}
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="h-[500px] relative">
-              <MapContainer 
-                center={center} 
-                zoom={14} 
-                style={{ height: "100%", width: "100%" }}
-                className="z-0"
-              >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {logs.map((log, index) => (
-                  <Marker
-                    key={log.id}
-                    position={[log.latitude, log.longitude]}
-                    icon={index === logs.length - 1 ? currentLocationIcon : leafletIcon}
-                  >
-                    <Popup>
-                      <div className="text-right font-sans" dir="rtl">
-                        <p className="font-bold">نقطة #{index + 1}</p>
-                        <p className="text-xs text-gray-600">
-                          {format(new Date(log.captured_at), "dd/MM/yyyy HH:mm:ss", { locale: ar })}
-                        </p>
-                        <p className="text-xs mt-1">دقة: {log.accuracy_m}م</p>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-                {logs.length > 1 && (
-                  <Polyline
-                    positions={logs.map((l) => [l.latitude, l.longitude] as L.LatLngTuple)}
-                    pathOptions={{ 
-                      color: "hsl(var(--primary))", 
-                      weight: 4,
-                      opacity: 0.8,
-                      dashArray: "10, 10"
-                    }}
-                  />
-                )}
-              </MapContainer>
+          </div>
 
-              {/* Current Location Overlay */}
-              {lastLog && (
-                <div className="absolute bottom-4 left-4 right-4 z-[1000]">
-                  <div className="bg-background/95 backdrop-blur rounded-lg border shadow-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
-                        <Target className="h-6 w-6 text-red-500" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">الموقع الحالي</p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
-                          <span className="flex items-center gap-1">
-                            <Compass className="h-3 w-3" />
-                            {lastLog.latitude.toFixed(6)}, {lastLog.longitude.toFixed(6)}
-                          </span>
-                          <span>دقة: {lastLog.accuracy_m}م</span>
-                          <span>ارتفاع: {lastLog.altitude_m}م</span>
-                        </div>
-                      </div>
+          {/* Map */}
+          <MapContainer 
+            center={center} 
+            zoom={14} 
+            style={{ height: "100%", width: "100%" }}
+            className="z-0"
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {logs.map((log, index) => (
+              <Marker
+                key={log.id}
+                position={[log.latitude, log.longitude]}
+                icon={index === logs.length - 1 ? currentLocationIcon : leafletIcon}
+              >
+                <Popup>
+                  <div className="text-right font-sans" dir="rtl">
+                    <p className="font-bold">نقطة #{index + 1}</p>
+                    <p className="text-xs text-gray-600">
+                      {format(new Date(log.captured_at), "dd/MM/yyyy HH:mm:ss", { locale: ar })}
+                    </p>
+                    <p className="text-xs mt-1">دقة: {log.accuracy_m}م</p>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+            {logs.length > 1 && (
+              <Polyline
+                positions={logs.map((l) => [l.latitude, l.longitude] as L.LatLngTuple)}
+                pathOptions={{ 
+                  color: "hsl(var(--primary))", 
+                  weight: 4,
+                  opacity: 0.8,
+                  dashArray: "10, 10"
+                }}
+              />
+            )}
+          </MapContainer>
+
+          {/* Current Location Overlay - Bottom Left */}
+          {lastLog && (
+            <div className="absolute bottom-4 left-4 z-[1000] max-w-sm">
+              <div className="bg-background/95 backdrop-blur rounded-lg border shadow-lg p-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                    <Target className="h-5 w-5 text-red-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">الموقع الحالي</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mt-1">
+                      <span className="flex items-center gap-1 font-mono">
+                        <Compass className="h-3 w-3" />
+                        {lastLog.latitude.toFixed(6)}, {lastLog.longitude.toFixed(6)}
+                      </span>
+                      <span>دقة: {lastLog.accuracy_m}م</span>
+                      <span>ارتفاع: {lastLog.altitude_m}م</span>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          )}
 
-        {/* Logs Timeline */}
-        <Card className="flex flex-col">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Activity className="h-5 w-5 text-primary" />
-                سجل التتبع
-              </CardTitle>
-              <Badge variant="secondary">{logs.length} نقطة</Badge>
+          {/* Logs Timeline Overlay - Right Side */}
+          <div className="absolute top-16 bottom-4 right-4 z-[1000] w-72">
+            <div className="h-full bg-background/95 backdrop-blur rounded-lg border shadow-lg flex flex-col overflow-hidden">
+              <div className="p-3 border-b bg-background/50 shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
+                    <span className="font-medium text-sm">سجل التتبع</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs">{logs.length} نقطة</Badge>
+                </div>
+              </div>
+              <ScrollArea className="flex-1">
+                {logs.length > 0 ? (
+                  <div className="p-2 space-y-2">
+                    {[...logs].reverse().map((log, idx) => {
+                      const isLatest = idx === 0;
+                      return (
+                        <div 
+                          key={log.id} 
+                          className={cn(
+                            "relative p-2.5 rounded-lg border transition-colors",
+                            isLatest 
+                              ? "bg-primary/5 border-primary/30" 
+                              : "bg-card/50 hover:bg-muted/50"
+                          )}
+                        >
+                          {isLatest && (
+                            <div className="absolute -top-1.5 -right-1.5">
+                              <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className={cn(
+                                "h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
+                                isLatest ? "bg-primary text-primary-foreground" : "bg-muted"
+                              )}>
+                                {logs.length - idx}
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium">
+                                  {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  {format(new Date(log.captured_at), "dd/MM/yyyy", { locale: ar })}
+                                </p>
+                              </div>
+                            </div>
+                            <Badge variant="outline" className="text-[9px] shrink-0 px-1.5">
+                              دقة {log.accuracy_m}م
+                            </Badge>
+                          </div>
+                          <div className="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px]">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">العرض:</span>
+                              <span className="font-mono">{log.latitude.toFixed(4)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">الطول:</span>
+                              <span className="font-mono">{log.longitude.toFixed(4)}</span>
+                            </div>
+                            <div className="flex justify-between col-span-2">
+                              <span className="text-muted-foreground">الارتفاع:</span>
+                              <span className="font-mono">{log.altitude_m}م</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-center p-4">
+                    <MapPin className="h-8 w-8 text-muted-foreground/50 mb-2" />
+                    <p className="text-sm text-muted-foreground">لا توجد نقاط تتبع بعد</p>
+                    <p className="text-xs text-muted-foreground mt-1">ستظهر النقاط هنا عند بدء التتبع</p>
+                  </div>
+                )}
+              </ScrollArea>
             </div>
-          </CardHeader>
-          <CardContent className="flex-1 p-0">
-            <ScrollArea className="h-[460px] px-4">
-              {logs.length > 0 ? (
-                <div className="space-y-3 pb-4">
-                  {[...logs].reverse().map((log, idx) => {
-                    const isLatest = idx === 0;
-                    return (
-                      <div 
-                        key={log.id} 
-                        className={cn(
-                          "relative p-3 rounded-lg border transition-colors",
-                          isLatest 
-                            ? "bg-primary/5 border-primary/30" 
-                            : "bg-card hover:bg-muted/50"
-                        )}
-                      >
-                        {isLatest && (
-                          <div className="absolute -top-2 -right-2">
-                            <span className="relative flex h-4 w-4">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className={cn(
-                              "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold",
-                              isLatest ? "bg-primary text-primary-foreground" : "bg-muted"
-                            )}>
-                              {logs.length - idx}
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">
-                                {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
-                              </p>
-                              <p className="text-[10px] text-muted-foreground">
-                                {format(new Date(log.captured_at), "dd/MM/yyyy", { locale: ar })}
-                              </p>
-                            </div>
-                          </div>
-                          <Badge variant="outline" className="text-[10px] shrink-0">
-                            دقة {log.accuracy_m}م
-                          </Badge>
-                        </div>
-                        <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">العرض:</span>
-                            <span className="font-mono">{log.latitude.toFixed(4)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الطول:</span>
-                            <span className="font-mono">{log.longitude.toFixed(4)}</span>
-                          </div>
-                          <div className="flex justify-between col-span-2">
-                            <span className="text-muted-foreground">الارتفاع:</span>
-                            <span className="font-mono">{log.altitude_m}م</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                  <MapPin className="h-12 w-12 text-muted-foreground/50 mb-3" />
-                  <p className="text-muted-foreground">لا توجد نقاط تتبع بعد</p>
-                  <p className="text-xs text-muted-foreground mt-1">ستظهر النقاط هنا عند بدء التتبع</p>
-                </div>
-              )}
-            </ScrollArea>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </div>
+      </Card>
 
       {/* Actions Card */}
       <Card>
