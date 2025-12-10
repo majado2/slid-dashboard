@@ -24,6 +24,10 @@ export interface TrackingRequest {
   id: number;
   beneficiary_id: number;
   authority_id: number;
+  beneficiary_name?: string;
+  beneficiary_national_id?: string;
+  authority_name?: string;
+  authority_logo?: string;
   channel: "API" | "SMS";
   status: "new" | "in_progress" | "done" | "rejected";
   created_at: string;

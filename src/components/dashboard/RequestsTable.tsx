@@ -49,8 +49,8 @@ export function RequestsTable({ requests }: RequestsTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead className="text-right">رقم الطلب</TableHead>
-            <TableHead className="text-right">رقم المستفيد</TableHead>
-            <TableHead className="text-right">رقم الجهة</TableHead>
+            <TableHead className="text-right">المستفيد</TableHead>
+            <TableHead className="text-right">الجهة</TableHead>
             <TableHead className="text-right">القناة</TableHead>
             <TableHead className="text-right">الحالة</TableHead>
             <TableHead className="text-right">تاريخ الإنشاء</TableHead>
@@ -71,8 +71,30 @@ export function RequestsTable({ requests }: RequestsTableProps) {
                 onClick={() => navigate(`/requests/${request.id}`)}
               >
                 <TableCell className="font-medium">#{request.id}</TableCell>
-                <TableCell>{request.beneficiary_id}</TableCell>
-                <TableCell>{request.authority_id}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {request.beneficiary_name ? request.beneficiary_name : `مستفيد #${request.beneficiary_id}`}
+                    </span>
+                    {request.beneficiary_national_id && (
+                      <span className="text-xs text-muted-foreground" dir="ltr">
+                        {request.beneficiary_national_id}
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {request.authority_name ? request.authority_name : `جهة #${request.authority_id}`}
+                    </span>
+                    {!request.authority_name && (
+                      <span className="text-xs text-muted-foreground" dir="ltr">
+                        #{request.authority_id}
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell>{getChannelBadge(request.channel)}</TableCell>
                 <TableCell>{getStatusBadge(request.status)}</TableCell>
                 <TableCell dir="ltr" className="text-right">
