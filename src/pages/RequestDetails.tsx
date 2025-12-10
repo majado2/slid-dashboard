@@ -280,7 +280,7 @@ const RequestDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
         <div className="space-y-6 animate-pulse">
           <Skeleton className="h-24 w-full rounded-2xl" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -296,7 +296,7 @@ const RequestDetails = () => {
 
   if (!request) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-destructive/5 flex flex-col items-center justify-center gap-6">
         <div className="relative">
           <div className="absolute inset-0 bg-destructive/20 rounded-full blur-2xl animate-pulse" />
           <AlertTriangle className="relative h-20 w-20 text-destructive" />
@@ -313,7 +313,7 @@ const RequestDetails = () => {
   const lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="space-y-5 p-4 lg:p-6">
         {/* Header Section */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
