@@ -50,6 +50,14 @@ const RequestDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  // Force dark mode for this page
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+    return () => {
+      document.documentElement.classList.remove('dark');
+    };
+  }, []);
+
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["tracking-request-full", id],
