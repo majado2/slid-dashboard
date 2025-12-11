@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats, getTrackingRequests } from "@/lib/api";
-import { StatsCard } from "@/components/dashboard/StatsCard";
 import { RequestsChart } from "@/components/dashboard/RequestsChart";
 import { RequestsTable } from "@/components/dashboard/RequestsTable";
 import { 
@@ -36,21 +35,20 @@ const Dashboard = () => {
 
   return (
     <div className="relative min-h-full">
-      {/* Animated Background Grid */}
+      {/* Subtle Background Grid */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(16, 185, 129, 0.5) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(16, 185, 129, 0.5) 1px, transparent 1px)
+              linear-gradient(rgba(155, 119, 58, 0.4) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(155, 119, 58, 0.4) 1px, transparent 1px)
             `,
-            backgroundSize: '60px 60px',
+            backgroundSize: '80px 80px',
           }}
         />
-        {/* Radial glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-teal-500/5 rounded-full blur-3xl" />
+        {/* Subtle glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-3xl" style={{ backgroundColor: 'rgba(155, 119, 58, 0.03)' }} />
       </div>
 
       <div className="relative space-y-8">
@@ -59,32 +57,32 @@ const Dashboard = () => {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-emerald-500/20 rounded-xl blur-lg animate-pulse" />
-                <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-emerald-400" />
+                <div className="absolute inset-0 rounded-xl blur-lg animate-pulse" style={{ backgroundColor: 'rgba(155, 119, 58, 0.15)' }} />
+                <div className="relative h-12 w-12 rounded-xl border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                  <Shield className="h-6 w-6" style={{ color: '#9B773A' }} />
                 </div>
               </div>
               <div>
-                <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                <h2 className="text-3xl font-bold tracking-tight text-white">
                   مركز العمليات
                 </h2>
-                <p className="text-muted-foreground">نظرة عامة على إحصائيات النظام</p>
+                <p className="text-neutral-400">نظرة عامة على إحصائيات النظام</p>
               </div>
             </div>
           </div>
 
           {/* Live Status Indicators */}
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg border" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
               <div className="relative">
-                <div className="absolute inset-0 bg-emerald-500 rounded-full animate-ping opacity-75" />
-                <div className="relative h-2 w-2 bg-emerald-500 rounded-full" />
+                <div className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ backgroundColor: '#9B773A' }} />
+                <div className="relative h-2 w-2 rounded-full" style={{ backgroundColor: '#9B773A' }} />
               </div>
-              <span className="text-sm text-emerald-400 font-medium">النظام نشط</span>
+              <span className="text-sm font-medium" style={{ color: '#9B773A' }}>النظام نشط</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <Radio className="h-4 w-4 text-teal-400 animate-pulse" />
-              <span className="text-sm text-slate-300">بث مباشر</span>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900/80 border border-neutral-800">
+              <Radio className="h-4 w-4 animate-pulse" style={{ color: '#9B773A' }} />
+              <span className="text-sm text-neutral-300">بث مباشر</span>
             </div>
           </div>
         </div>
@@ -96,28 +94,28 @@ const Dashboard = () => {
             value={stats?.users.total_users || 0}
             icon={Users}
             description="عدد جميع المستفيدين المسجلين"
-            color="emerald"
+            variant="primary"
           />
           <EmergencyStatsCard
             title="مستفيدون مفعّلون"
             value={stats?.users.active_location_users || 0}
             icon={UserCheck}
             description="المستفيدون الذين فعّلوا الموقع"
-            color="teal"
+            variant="primary"
           />
           <EmergencyStatsCard
             title="مستفيدون غير مفعّلين"
             value={stats?.users.inactive_location_users || 0}
             icon={UserX}
             description="المستفيدون الذين لم يفعّلوا الموقع"
-            color="amber"
+            variant="warning"
           />
           <EmergencyStatsCard
             title="إجمالي الجهات"
             value={stats?.authorities.total_authorities || 0}
             icon={Building2}
             description="عدد الجهات الحكومية المسجلة"
-            color="blue"
+            variant="primary"
           />
         </div>
 
@@ -128,7 +126,7 @@ const Dashboard = () => {
             value={stats?.users.benefited_users || 0}
             icon={CheckCircle}
             description="لديهم سجلات تتبع"
-            color="emerald"
+            variant="success"
             large
           />
           <EmergencyStatsCard
@@ -136,63 +134,55 @@ const Dashboard = () => {
             value={stats?.users.not_benefited_users || 0}
             icon={XCircle}
             description="ليس لديهم سجلات تتبع"
-            color="rose"
+            variant="danger"
             large
           />
         </div>
 
         {/* Tracking Requests Stats Card */}
-        <Card className="relative overflow-hidden bg-slate-900/50 border-slate-700/50 backdrop-blur-sm group hover:border-emerald-500/30 transition-all duration-500">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl" />
+        <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800 group hover:border-opacity-100 transition-all duration-300" style={{ ['--hover-border' as string]: 'rgba(155, 119, 58, 0.4)' }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(155, 119, 58, 0.05)' }} />
           
           <CardHeader className="relative">
             <CardTitle className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center">
-                <FileText className="h-5 w-5 text-emerald-400" />
+              <div className="h-10 w-10 rounded-lg border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                <FileText className="h-5 w-5" style={{ color: '#9B773A' }} />
               </div>
-              <span className="text-lg font-semibold">إحصائيات الطلبات</span>
+              <span className="text-lg font-semibold text-white">إحصائيات الطلبات</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="relative">
             <div className="flex items-end gap-4">
-              <div className="text-5xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <div className="text-5xl font-bold" style={{ color: '#9B773A' }}>
                 {stats?.tracking.total_requests || 0}
               </div>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-2">
-                <Activity className="h-3 w-3 text-emerald-400" />
-                <span className="text-xs text-emerald-400">نشط</span>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-md border mb-2" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                <Activity className="h-3 w-3" style={{ color: '#9B773A' }} />
+                <span className="text-xs" style={{ color: '#9B773A' }}>نشط</span>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">إجمالي طلبات التتبع في النظام</p>
+            <p className="text-sm text-neutral-500 mt-2">إجمالي طلبات التتبع في النظام</p>
           </CardContent>
         </Card>
 
         {/* Charts Section */}
         {stats?.tracking.requests_by_status && (
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 rounded-2xl blur-xl opacity-50" />
-            <div className="relative">
-              <RequestsChart data={stats.tracking.requests_by_status} />
-            </div>
-          </div>
+          <RequestsChart data={stats.tracking.requests_by_status} />
         )}
 
         {/* Requests Table */}
-        <Card className="relative overflow-hidden bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 via-transparent to-slate-800/50" />
-          
-          <CardHeader className="relative border-b border-slate-700/50">
+        <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800">
+          <CardHeader className="relative border-b border-neutral-800">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center">
-                  <AlertTriangle className="h-5 w-5 text-amber-400" />
+                <div className="h-10 w-10 rounded-lg border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                  <AlertTriangle className="h-5 w-5" style={{ color: '#9B773A' }} />
                 </div>
-                <span className="text-lg font-semibold">آخر الطلبات</span>
+                <span className="text-lg font-semibold text-white">آخر الطلبات</span>
               </CardTitle>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30">
-                <Zap className="h-3 w-3 text-amber-400" />
-                <span className="text-xs text-amber-400">تحديث مباشر</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                <Zap className="h-3 w-3" style={{ color: '#9B773A' }} />
+                <span className="text-xs" style={{ color: '#9B773A' }}>تحديث مباشر</span>
               </div>
             </div>
           </CardHeader>
@@ -215,91 +205,80 @@ const Dashboard = () => {
 interface EmergencyStatsCardProps {
   title: string;
   value: number;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   description: string;
-  color: 'emerald' | 'teal' | 'amber' | 'blue' | 'rose';
+  variant: 'primary' | 'success' | 'warning' | 'danger';
   large?: boolean;
 }
 
-const colorStyles = {
-  emerald: {
-    bg: 'from-emerald-500/20 to-teal-500/20',
-    border: 'border-emerald-500/30',
-    text: 'text-emerald-400',
-    glow: 'bg-emerald-500/20',
-    gradient: 'from-emerald-400 to-teal-400',
+const variantStyles = {
+  primary: {
+    iconBg: 'rgba(155, 119, 58, 0.1)',
+    iconBorder: 'rgba(155, 119, 58, 0.3)',
+    iconColor: '#9B773A',
+    valueColor: '#9B773A',
+    glowColor: 'rgba(155, 119, 58, 0.1)',
   },
-  teal: {
-    bg: 'from-teal-500/20 to-cyan-500/20',
-    border: 'border-teal-500/30',
-    text: 'text-teal-400',
-    glow: 'bg-teal-500/20',
-    gradient: 'from-teal-400 to-cyan-400',
+  success: {
+    iconBg: 'rgba(34, 197, 94, 0.1)',
+    iconBorder: 'rgba(34, 197, 94, 0.3)',
+    iconColor: '#22c55e',
+    valueColor: '#22c55e',
+    glowColor: 'rgba(34, 197, 94, 0.1)',
   },
-  amber: {
-    bg: 'from-amber-500/20 to-orange-500/20',
-    border: 'border-amber-500/30',
-    text: 'text-amber-400',
-    glow: 'bg-amber-500/20',
-    gradient: 'from-amber-400 to-orange-400',
+  warning: {
+    iconBg: 'rgba(245, 158, 11, 0.1)',
+    iconBorder: 'rgba(245, 158, 11, 0.3)',
+    iconColor: '#f59e0b',
+    valueColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.1)',
   },
-  blue: {
-    bg: 'from-blue-500/20 to-indigo-500/20',
-    border: 'border-blue-500/30',
-    text: 'text-blue-400',
-    glow: 'bg-blue-500/20',
-    gradient: 'from-blue-400 to-indigo-400',
-  },
-  rose: {
-    bg: 'from-rose-500/20 to-pink-500/20',
-    border: 'border-rose-500/30',
-    text: 'text-rose-400',
-    glow: 'bg-rose-500/20',
-    gradient: 'from-rose-400 to-pink-400',
+  danger: {
+    iconBg: 'rgba(239, 68, 68, 0.1)',
+    iconBorder: 'rgba(239, 68, 68, 0.3)',
+    iconColor: '#ef4444',
+    valueColor: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.1)',
   },
 };
 
-const EmergencyStatsCard = ({ title, value, icon: Icon, description, color, large }: EmergencyStatsCardProps) => {
-  const styles = colorStyles[color];
+const EmergencyStatsCard = ({ title, value, icon: Icon, description, variant, large }: EmergencyStatsCardProps) => {
+  const styles = variantStyles[variant];
   
   return (
-    <Card className={cn(
-      "relative overflow-hidden bg-slate-900/50 border-slate-700/50 backdrop-blur-sm group hover:border-opacity-100 transition-all duration-500",
-      `hover:${styles.border}`
-    )}>
-      {/* Glow effect */}
-      <div className={cn(
-        "absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-        styles.glow
-      )} />
-      
-      {/* Gradient overlay on hover */}
-      <div className={cn(
-        "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-        styles.bg.replace('from-', 'from-').replace('/20', '/5').replace('to-', 'to-').replace('/20', '/5')
-      )} />
+    <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800 group hover:border-neutral-700 transition-all duration-300">
+      {/* Subtle glow effect on hover */}
+      <div 
+        className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ backgroundColor: styles.glowColor }}
+      />
 
       <CardContent className={cn("relative", large ? "p-6" : "p-5")}>
         <div className="flex items-start justify-between">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <div className={cn(
-              "font-bold bg-gradient-to-r bg-clip-text text-transparent",
-              styles.gradient,
-              large ? "text-4xl" : "text-3xl"
-            )}>
+            <p className="text-sm text-neutral-400">{title}</p>
+            <div 
+              className={cn("font-bold", large ? "text-4xl" : "text-3xl")}
+              style={{ color: styles.valueColor }}
+            >
               {value.toLocaleString('ar-SA')}
             </div>
-            <p className="text-xs text-muted-foreground/70">{description}</p>
+            <p className="text-xs text-neutral-500">{description}</p>
           </div>
-          <div className={cn(
-            "rounded-xl bg-gradient-to-br flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
-            styles.bg,
-            styles.border,
-            "border",
-            large ? "h-14 w-14" : "h-12 w-12"
-          )}>
-            <Icon className={cn(styles.text, large ? "h-7 w-7" : "h-6 w-6")} />
+          <div 
+            className={cn(
+              "rounded-lg border flex items-center justify-center transition-transform duration-300 group-hover:scale-105",
+              large ? "h-14 w-14" : "h-12 w-12"
+            )}
+            style={{ 
+              backgroundColor: styles.iconBg,
+              borderColor: styles.iconBorder
+            }}
+          >
+            <Icon 
+              className={cn(large ? "h-7 w-7" : "h-6 w-6")} 
+              style={{ color: styles.iconColor }}
+            />
           </div>
         </div>
       </CardContent>
