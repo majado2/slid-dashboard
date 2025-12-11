@@ -339,18 +339,47 @@ const RequestDetails = () => {
                 <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                   بلاغ طوارئ #{request.id}
                 </h1>
-                <Badge 
-                  variant="outline" 
-                  className={cn(
-                    "text-sm px-4 py-1.5 font-semibold transition-all duration-300 shadow-lg",
+                <Select
+                  value={currentStatus as TrackingStatus}
+                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                  disabled={statusMutation.isPending}
+                >
+                  <SelectTrigger className={cn(
+                    "h-9 w-auto min-w-[130px] text-sm px-4 font-semibold transition-all duration-300 shadow-lg border",
                     statusConfig.className,
                     statusConfig.glow,
                     isLive && "animate-pulse"
-                  )}
-                >
-                  <StatusIcon className={cn("h-4 w-4 ml-2", statusConfig.color, isLive && "animate-spin")} />
-                  {statusConfig.label}
-                </Badge>
+                  )}>
+                    <StatusIcon className={cn("h-4 w-4 ml-2", statusConfig.color, isLive && "animate-spin")} />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                        جديد
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="in_progress">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        قيد التتبع
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="done">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                        مكتمل
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="rejected">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                        مرفوض
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
@@ -412,46 +441,6 @@ const RequestDetails = () => {
                     )}
                   </div>
                   
-                  {/* Status Change */}
-                  <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
-                    <Activity className="h-4 w-4 text-primary" />
-                    <span className="text-xs text-muted-foreground">الحالة:</span>
-                    <Select
-                      value={currentStatus as TrackingStatus}
-                      onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                      disabled={statusMutation.isPending}
-                    >
-                      <SelectTrigger className="h-7 w-auto min-w-[100px] text-xs bg-transparent border-0 p-0 pr-2 focus:ring-0 shadow-none">
-                        <SelectValue placeholder="اختر الحالة" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="new">
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-amber-500"></span>
-                            جديد
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="in_progress">
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
-                            قيد التتبع
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="done">
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                            مكتمل
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="rejected">
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                            مرفوض
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                   
                   {/* Beneficiary */}
                   <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
