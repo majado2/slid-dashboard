@@ -235,17 +235,17 @@ const RequestDetails = () => {
       },
       in_progress: {
         label: "قيد التتبع",
-        className: "bg-blue-500/20 text-blue-400 border-blue-500/50",
+        className: "bg-[#9B773A]/20 text-[#9B773A] border-[#9B773A]/50",
         icon: Activity,
-        color: "text-blue-400",
-        glow: "shadow-blue-500/25"
+        color: "text-[#9B773A]",
+        glow: "shadow-[#9B773A]/25"
       },
       done: { 
         label: "مكتمل", 
-        className: "bg-emerald-500/20 text-emerald-400 border-emerald-500/50",
+        className: "bg-green-500/20 text-green-400 border-green-500/50",
         icon: Target,
-        color: "text-emerald-400",
-        glow: "shadow-emerald-500/25"
+        color: "text-green-400",
+        glow: "shadow-green-500/25"
       },
       rejected: { 
         label: "مرفوض", 
@@ -357,7 +357,7 @@ const RequestDetails = () => {
             <div className={cn(
               "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg",
               socketStatus === "connected" 
-                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-emerald-500/10" 
+                ? "bg-[#9B773A]/10 text-[#9B773A] border-[#9B773A]/30 shadow-[#9B773A]/10" 
                 : socketStatus === "connecting"
                 ? "bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10"
                 : "bg-card/50 text-muted-foreground border-border/50"
@@ -366,7 +366,7 @@ const RequestDetails = () => {
                 <>
                   <div className="relative">
                     <Wifi className="h-5 w-5" />
-                    <div className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
+                    <div className="absolute -top-1 -right-1 h-2 w-2 bg-[#9B773A] rounded-full animate-ping" />
                   </div>
                   <span>البث الحي متصل</span>
                   <Signal className="h-4 w-4 animate-pulse" />
@@ -404,13 +404,13 @@ const RequestDetails = () => {
                 </SelectItem>
                 <SelectItem value="in_progress">
                   <span className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span className="h-2.5 w-2.5 rounded-full animate-pulse" style={{ backgroundColor: '#9B773A' }}></span>
                     قيد التتبع
                   </span>
                 </SelectItem>
                 <SelectItem value="done">
                   <span className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                    <span className="h-2.5 w-2.5 rounded-full bg-green-500"></span>
                     مكتمل
                   </span>
                 </SelectItem>
