@@ -40,7 +40,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" dir="rtl">
+    <div className="dark min-h-screen flex flex-col bg-background" dir="rtl">
       {/* Header */}
       <header className="relative z-50 h-[80px] bg-card/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6 sm:px-10">
