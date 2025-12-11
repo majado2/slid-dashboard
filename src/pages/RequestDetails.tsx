@@ -585,61 +585,67 @@ const RequestDetails = () => {
                           <div 
                             key={log.id} 
                             className={cn(
-                              "relative p-3 rounded-xl border transition-all duration-300 hover:scale-[1.02]",
+                              "relative p-4 rounded-xl border transition-all duration-300 hover:scale-[1.01]",
                               isLatest 
-                                ? "bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-lg shadow-primary/5" 
-                                : "bg-card/50 border-border/50 hover:bg-card hover:border-border"
+                                ? "bg-gradient-to-br from-primary/15 to-primary/5 border-primary/40 shadow-lg shadow-primary/10" 
+                                : "bg-card/30 border-border/30 hover:bg-card/50 hover:border-border/50"
                             )}
                           >
                             {isLatest && (
                               <div className="absolute -top-1.5 -right-1.5">
-                                <span className="relative flex h-4 w-4">
+                                <span className="relative flex h-3 w-3">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-4 w-4 bg-primary shadow-lg shadow-primary/50"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-primary shadow-lg shadow-primary/50"></span>
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-3">
+                            
+                            {/* Header Row */}
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-2.5">
                                 <div className={cn(
-                                  "h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
+                                  "h-7 w-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0",
                                   isLatest 
-                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" 
-                                    : "bg-muted text-muted-foreground"
+                                    ? "bg-primary text-primary-foreground shadow-sm" 
+                                    : "bg-muted/50 text-muted-foreground"
                                 )}>
                                   {logs.length - idx}
                                 </div>
-                                <div>
-                                  <p className="text-sm font-bold">
-                                    {format(new Date(log.captured_at), "HH:mm:ss", { locale: ar })}
-                                  </p>
-                                  <p className="text-[11px] text-muted-foreground">
-                                    {format(new Date(log.captured_at), "dd/MM/yyyy", { locale: ar })}
-                                  </p>
+                                <div className="flex flex-col">
+                                  <span className="font-mono text-base font-bold tracking-tight">
+                                    {format(new Date(log.captured_at), "HH:mm:ss")}
+                                  </span>
+                                  <span className="font-mono text-[10px] text-muted-foreground">
+                                    {format(new Date(log.captured_at), "yyyy/MM/dd")}
+                                  </span>
                                 </div>
                               </div>
                               <Badge 
-                                variant={isLatest ? "default" : "outline"} 
+                                variant="outline" 
                                 className={cn(
-                                  "text-[10px] shrink-0 px-2",
-                                  isLatest && "bg-primary/20 text-primary border-primary/30"
+                                  "font-mono text-[10px] px-2 py-0.5",
+                                  isLatest 
+                                    ? "bg-primary/10 text-primary border-primary/30" 
+                                    : "bg-muted/30 border-border/50"
                                 )}
                               >
-                                {log.accuracy_m}م
+                                ±{log.accuracy_m}m
                               </Badge>
                             </div>
-                            <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-2 text-[11px]">
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">العرض:</span>
-                                <span className="font-mono font-medium">{log.latitude.toFixed(5)}</span>
+                            
+                            {/* Coordinates Grid */}
+                            <div className="grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-background/50 border border-border/30">
+                              <div className="text-center">
+                                <p className="text-[9px] text-muted-foreground mb-0.5 uppercase tracking-wider">LAT</p>
+                                <p className="font-mono text-xs font-semibold">{log.latitude.toFixed(5)}</p>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">الطول:</span>
-                                <span className="font-mono font-medium">{log.longitude.toFixed(5)}</span>
+                              <div className="text-center border-x border-border/30">
+                                <p className="text-[9px] text-muted-foreground mb-0.5 uppercase tracking-wider">LNG</p>
+                                <p className="font-mono text-xs font-semibold">{log.longitude.toFixed(5)}</p>
                               </div>
-                              <div className="flex justify-between col-span-2">
-                                <span className="text-muted-foreground">الارتفاع:</span>
-                                <span className="font-mono font-medium">{log.altitude_m}م</span>
+                              <div className="text-center">
+                                <p className="text-[9px] text-muted-foreground mb-0.5 uppercase tracking-wider">ALT</p>
+                                <p className="font-mono text-xs font-semibold">{log.altitude_m}m</p>
                               </div>
                             </div>
                           </div>
