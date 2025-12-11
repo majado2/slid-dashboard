@@ -4,7 +4,7 @@ import { RequestsChart } from "@/components/dashboard/RequestsChart";
 import { RequestsTable } from "@/components/dashboard/RequestsTable";
 import { 
   Users, UserCheck, UserX, CheckCircle, XCircle, FileText, Building2,
-  Activity, Radio, Shield, AlertTriangle, Zap, TrendingUp, ArrowUpRight
+  Activity, Radio, Shield, AlertTriangle, Zap
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,136 +35,135 @@ const Dashboard = () => {
 
   return (
     <div className="relative min-h-full">
-      {/* Subtle Background */}
+      {/* Subtle Background Grid */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute inset-0 opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.02]"
           style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(155, 119, 58, 0.5) 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
+            backgroundImage: `
+              linear-gradient(rgba(155, 119, 58, 0.4) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(155, 119, 58, 0.4) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
           }}
         />
+        {/* Subtle glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-3xl" style={{ backgroundColor: 'rgba(155, 119, 58, 0.03)' }} />
       </div>
 
       <div className="relative space-y-8">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl border-2 flex items-center justify-center" style={{ borderColor: 'rgba(155, 119, 58, 0.4)', backgroundColor: 'rgba(155, 119, 58, 0.08)' }}>
-              <Shield className="h-7 w-7" style={{ color: '#9B773A' }} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-white">مركز العمليات</h2>
-              <p className="text-neutral-500 text-sm">نظرة عامة على إحصائيات النظام</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-xl blur-lg animate-pulse" style={{ backgroundColor: 'rgba(155, 119, 58, 0.15)' }} />
+                <div className="relative h-12 w-12 rounded-xl border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                  <Shield className="h-6 w-6" style={{ color: '#9B773A' }} />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight text-white">
+                  مركز العمليات
+                </h2>
+                <p className="text-neutral-400">نظرة عامة على إحصائيات النظام</p>
+              </div>
             </div>
           </div>
 
-          {/* Status Indicator */}
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border" style={{ backgroundColor: 'rgba(155, 119, 58, 0.08)', borderColor: 'rgba(155, 119, 58, 0.25)' }}>
-            <div className="relative flex items-center justify-center">
-              <span className="absolute h-3 w-3 rounded-full animate-ping" style={{ backgroundColor: 'rgba(155, 119, 58, 0.4)' }} />
-              <span className="relative h-2 w-2 rounded-full" style={{ backgroundColor: '#9B773A' }} />
+          {/* Live Status Indicators */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg border" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ backgroundColor: '#9B773A' }} />
+                <div className="relative h-2 w-2 rounded-full" style={{ backgroundColor: '#9B773A' }} />
+              </div>
+              <span className="text-sm font-medium" style={{ color: '#9B773A' }}>النظام نشط</span>
             </div>
-            <span className="text-sm font-medium" style={{ color: '#9B773A' }}>متصل</span>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900/80 border border-neutral-800">
+              <Radio className="h-4 w-4 animate-pulse" style={{ color: '#9B773A' }} />
+              <span className="text-sm text-neutral-300">بث مباشر</span>
+            </div>
           </div>
         </div>
 
-        {/* Main Stats - New Design */}
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <StatBlock
-            label="إجمالي المستفيدين"
+        {/* Main Stats Grid */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <EmergencyStatsCard
+            title="إجمالي المستفيدين"
             value={stats?.users.total_users || 0}
             icon={Users}
-            trend="+12%"
+            description="عدد جميع المستفيدين المسجلين"
+            variant="primary"
           />
-          <StatBlock
-            label="مستفيدون مفعّلون"
+          <EmergencyStatsCard
+            title="مستفيدون مفعّلون"
             value={stats?.users.active_location_users || 0}
             icon={UserCheck}
-            trend="+8%"
-            highlight
+            description="المستفيدون الذين فعّلوا الموقع"
+            variant="primary"
           />
-          <StatBlock
-            label="غير مفعّلين"
+          <EmergencyStatsCard
+            title="مستفيدون غير مفعّلين"
             value={stats?.users.inactive_location_users || 0}
             icon={UserX}
-            trend="-3%"
-            negative
+            description="المستفيدون الذين لم يفعّلوا الموقع"
+            variant="warning"
           />
-          <StatBlock
-            label="الجهات"
+          <EmergencyStatsCard
+            title="إجمالي الجهات"
             value={stats?.authorities.total_authorities || 0}
             icon={Building2}
-            trend="+2"
+            description="عدد الجهات الحكومية المسجلة"
+            variant="primary"
           />
         </div>
 
-        {/* Secondary Stats - Horizontal Cards */}
-        <div className="grid gap-5 md:grid-cols-2">
-          <div className="relative overflow-hidden rounded-2xl border p-6" style={{ backgroundColor: 'rgba(34, 197, 94, 0.04)', borderColor: 'rgba(34, 197, 94, 0.15)' }}>
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500" />
-                  <span className="text-sm text-neutral-400">مستفيدون استفادوا</span>
-                </div>
-                <div className="text-4xl font-bold text-green-500">
-                  {(stats?.users.benefited_users || 0).toLocaleString('ar-SA')}
-                </div>
-                <p className="text-xs text-neutral-500">لديهم سجلات تتبع نشطة</p>
-              </div>
-              <div className="h-16 w-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-green-500" />
-              </div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500/0 via-green-500/50 to-green-500/0" />
-          </div>
-
-          <div className="relative overflow-hidden rounded-2xl border p-6" style={{ backgroundColor: 'rgba(239, 68, 68, 0.04)', borderColor: 'rgba(239, 68, 68, 0.15)' }}>
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-red-500" />
-                  <span className="text-sm text-neutral-400">لم يستفيدوا بعد</span>
-                </div>
-                <div className="text-4xl font-bold text-red-500">
-                  {(stats?.users.not_benefited_users || 0).toLocaleString('ar-SA')}
-                </div>
-                <p className="text-xs text-neutral-500">بدون سجلات تتبع</p>
-              </div>
-              <div className="h-16 w-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                <XCircle className="h-8 w-8 text-red-500" />
-              </div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500/0 via-red-500/50 to-red-500/0" />
-          </div>
+        {/* Secondary Stats */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <EmergencyStatsCard
+            title="مستفيدون استفادوا"
+            value={stats?.users.benefited_users || 0}
+            icon={CheckCircle}
+            description="لديهم سجلات تتبع"
+            variant="success"
+            large
+          />
+          <EmergencyStatsCard
+            title="مستفيدون لم يستفيدوا"
+            value={stats?.users.not_benefited_users || 0}
+            icon={XCircle}
+            description="ليس لديهم سجلات تتبع"
+            variant="danger"
+            large
+          />
         </div>
 
-        {/* Total Requests - Prominent Card */}
-        <div className="relative overflow-hidden rounded-2xl border p-8" style={{ backgroundColor: 'rgba(155, 119, 58, 0.05)', borderColor: 'rgba(155, 119, 58, 0.2)' }}>
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(155, 119, 58, 0.08)' }} />
+        {/* Tracking Requests Stats Card */}
+        <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800 group hover:border-opacity-100 transition-all duration-300" style={{ ['--hover-border' as string]: 'rgba(155, 119, 58, 0.4)' }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(155, 119, 58, 0.05)' }} />
           
-          <div className="relative flex items-center justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
+          <CardHeader className="relative">
+            <CardTitle className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
                 <FileText className="h-5 w-5" style={{ color: '#9B773A' }} />
-                <span className="text-neutral-400">إجمالي طلبات التتبع</span>
               </div>
-              <div className="flex items-baseline gap-4">
-                <span className="text-6xl font-bold" style={{ color: '#9B773A' }}>
-                  {stats?.tracking.total_requests || 0}
-                </span>
-                <div className="flex items-center gap-1 px-2 py-1 rounded-md" style={{ backgroundColor: 'rgba(155, 119, 58, 0.15)' }}>
-                  <TrendingUp className="h-3 w-3" style={{ color: '#9B773A' }} />
-                  <span className="text-xs font-medium" style={{ color: '#9B773A' }}>+24%</span>
-                </div>
+              <span className="text-lg font-semibold text-white">إحصائيات الطلبات</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            <div className="flex items-end gap-4">
+              <div className="text-5xl font-bold" style={{ color: '#9B773A' }}>
+                {stats?.tracking.total_requests || 0}
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-md border mb-2" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                <Activity className="h-3 w-3" style={{ color: '#9B773A' }} />
+                <span className="text-xs" style={{ color: '#9B773A' }}>نشط</span>
               </div>
             </div>
-            <div className="h-20 w-20 rounded-2xl border-2 flex items-center justify-center" style={{ borderColor: 'rgba(155, 119, 58, 0.3)', backgroundColor: 'rgba(155, 119, 58, 0.1)' }}>
-              <Activity className="h-10 w-10" style={{ color: '#9B773A' }} />
-            </div>
-          </div>
-        </div>
+            <p className="text-sm text-neutral-500 mt-2">إجمالي طلبات التتبع في النظام</p>
+          </CardContent>
+        </Card>
 
         {/* Charts Section */}
         {stats?.tracking.requests_by_status && (
@@ -172,18 +171,22 @@ const Dashboard = () => {
         )}
 
         {/* Requests Table */}
-        <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'rgba(155, 119, 58, 0.15)' }}>
-          <div className="flex items-center justify-between px-6 py-4 border-b bg-neutral-900/50" style={{ borderColor: 'rgba(155, 119, 58, 0.15)' }}>
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="h-5 w-5" style={{ color: '#9B773A' }} />
-              <span className="font-semibold text-white">آخر الطلبات</span>
+        <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800">
+          <CardHeader className="relative border-b border-neutral-800">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg border flex items-center justify-center" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                  <AlertTriangle className="h-5 w-5" style={{ color: '#9B773A' }} />
+                </div>
+                <span className="text-lg font-semibold text-white">آخر الطلبات</span>
+              </CardTitle>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)', borderColor: 'rgba(155, 119, 58, 0.3)' }}>
+                <Zap className="h-3 w-3" style={{ color: '#9B773A' }} />
+                <span className="text-xs" style={{ color: '#9B773A' }}>تحديث مباشر</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ backgroundColor: 'rgba(155, 119, 58, 0.1)' }}>
-              <div className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#9B773A' }} />
-              <span className="text-xs" style={{ color: '#9B773A' }}>مباشر</span>
-            </div>
-          </div>
-          <div className="bg-neutral-950/50">
+          </CardHeader>
+          <CardContent className="relative p-0">
             {requestsLoading ? (
               <div className="p-6">
                 <Skeleton className="h-64" />
@@ -191,78 +194,95 @@ const Dashboard = () => {
             ) : (
               <RequestsTable requests={requests || []} />
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
 
-// New Stat Block Component
-interface StatBlockProps {
-  label: string;
+// Emergency-styled Stats Card Component
+interface EmergencyStatsCardProps {
+  title: string;
   value: number;
   icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  trend: string;
-  highlight?: boolean;
-  negative?: boolean;
+  description: string;
+  variant: 'primary' | 'success' | 'warning' | 'danger';
+  large?: boolean;
 }
 
-const StatBlock = ({ label, value, icon: Icon, trend, highlight, negative }: StatBlockProps) => {
-  const accentColor = negative ? '#f59e0b' : '#9B773A';
+const variantStyles = {
+  primary: {
+    iconBg: 'rgba(155, 119, 58, 0.1)',
+    iconBorder: 'rgba(155, 119, 58, 0.3)',
+    iconColor: '#9B773A',
+    valueColor: '#9B773A',
+    glowColor: 'rgba(155, 119, 58, 0.1)',
+  },
+  success: {
+    iconBg: 'rgba(34, 197, 94, 0.1)',
+    iconBorder: 'rgba(34, 197, 94, 0.3)',
+    iconColor: '#22c55e',
+    valueColor: '#22c55e',
+    glowColor: 'rgba(34, 197, 94, 0.1)',
+  },
+  warning: {
+    iconBg: 'rgba(245, 158, 11, 0.1)',
+    iconBorder: 'rgba(245, 158, 11, 0.3)',
+    iconColor: '#f59e0b',
+    valueColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.1)',
+  },
+  danger: {
+    iconBg: 'rgba(239, 68, 68, 0.1)',
+    iconBorder: 'rgba(239, 68, 68, 0.3)',
+    iconColor: '#ef4444',
+    valueColor: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.1)',
+  },
+};
+
+const EmergencyStatsCard = ({ title, value, icon: Icon, description, variant, large }: EmergencyStatsCardProps) => {
+  const styles = variantStyles[variant];
   
   return (
-    <div 
-      className={cn(
-        "relative group rounded-2xl border p-5 transition-all duration-300 hover:translate-y-[-2px]",
-        highlight && "ring-1"
-      )}
-      style={{ 
-        backgroundColor: highlight ? 'rgba(155, 119, 58, 0.06)' : 'rgba(23, 23, 23, 0.6)',
-        borderColor: highlight ? 'rgba(155, 119, 58, 0.25)' : 'rgba(64, 64, 64, 0.5)',
-        ...(highlight && { ringColor: 'rgba(155, 119, 58, 0.15)' })
-      }}
-    >
-      {/* Top Row */}
-      <div className="flex items-start justify-between mb-4">
-        <div 
-          className="h-11 w-11 rounded-xl border flex items-center justify-center"
-          style={{ 
-            backgroundColor: `${accentColor}10`,
-            borderColor: `${accentColor}30`
-          }}
-        >
-          <Icon className="h-5 w-5" style={{ color: accentColor }} />
-        </div>
-        <div 
-          className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium"
-          style={{ 
-            backgroundColor: negative ? 'rgba(245, 158, 11, 0.1)' : 'rgba(155, 119, 58, 0.1)',
-            color: negative ? '#f59e0b' : '#9B773A'
-          }}
-        >
-          <ArrowUpRight className={cn("h-3 w-3", negative && "rotate-90")} />
-          {trend}
-        </div>
-      </div>
-
-      {/* Value */}
+    <Card className="relative overflow-hidden bg-neutral-900/60 border-neutral-800 group hover:border-neutral-700 transition-all duration-300">
+      {/* Subtle glow effect on hover */}
       <div 
-        className="text-3xl font-bold mb-1"
-        style={{ color: accentColor }}
-      >
-        {value.toLocaleString('ar-SA')}
-      </div>
-
-      {/* Label */}
-      <p className="text-sm text-neutral-500">{label}</p>
-
-      {/* Bottom accent line */}
-      <div 
-        className="absolute bottom-0 left-4 right-4 h-[2px] rounded-full opacity-50"
-        style={{ backgroundColor: accentColor }}
+        className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ backgroundColor: styles.glowColor }}
       />
-    </div>
+
+      <CardContent className={cn("relative", large ? "p-6" : "p-5")}>
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-sm text-neutral-400">{title}</p>
+            <div 
+              className={cn("font-bold", large ? "text-4xl" : "text-3xl")}
+              style={{ color: styles.valueColor }}
+            >
+              {value.toLocaleString('ar-SA')}
+            </div>
+            <p className="text-xs text-neutral-500">{description}</p>
+          </div>
+          <div 
+            className={cn(
+              "rounded-lg border flex items-center justify-center transition-transform duration-300 group-hover:scale-105",
+              large ? "h-14 w-14" : "h-12 w-12"
+            )}
+            style={{ 
+              backgroundColor: styles.iconBg,
+              borderColor: styles.iconBorder
+            }}
+          >
+            <Icon 
+              className={cn(large ? "h-7 w-7" : "h-6 w-6")} 
+              style={{ color: styles.iconColor }}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
