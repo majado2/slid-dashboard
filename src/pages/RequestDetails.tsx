@@ -339,47 +339,18 @@ const RequestDetails = () => {
                 <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                   بلاغ طوارئ #{request.id}
                 </h1>
-                <Select
-                  value={currentStatus as TrackingStatus}
-                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                  disabled={statusMutation.isPending}
-                >
-                  <SelectTrigger className={cn(
-                    "h-9 w-auto min-w-[130px] text-sm px-4 font-semibold transition-all duration-300 shadow-lg border",
+                <Badge 
+                  variant="outline" 
+                  className={cn(
+                    "text-sm px-4 py-1.5 font-semibold transition-all duration-300 shadow-lg",
                     statusConfig.className,
                     statusConfig.glow,
                     isLive && "animate-pulse"
-                  )}>
-                    <StatusIcon className={cn("h-4 w-4 ml-2", statusConfig.color, isLive && "animate-spin")} />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-                        جديد
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="in_progress">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse"></span>
-                        قيد التتبع
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="done">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                        مكتمل
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="rejected">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                        مرفوض
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  )}
+                >
+                  <StatusIcon className={cn("h-4 w-4 ml-2", statusConfig.color, isLive && "animate-spin")} />
+                  {statusConfig.label}
+                </Badge>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
@@ -388,36 +359,76 @@ const RequestDetails = () => {
             </div>
           </div>
           
-          {/* Live Connection Status */}
-          <div className={cn(
-            "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg",
-            socketStatus === "connected" 
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-emerald-500/10" 
-              : socketStatus === "connecting"
-              ? "bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10"
-              : "bg-card/50 text-muted-foreground border-border/50"
-          )}>
-            {socketStatus === "connected" ? (
-              <>
-                <div className="relative">
-                  <Wifi className="h-5 w-5" />
-                  <div className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
-                </div>
-                <span>البث الحي متصل</span>
-                <Signal className="h-4 w-4 animate-pulse" />
-              </>
-            ) : socketStatus === "connecting" ? (
-              <>
-                <Wifi className="h-5 w-5 animate-pulse" />
-                <span>جاري الاتصال...</span>
-                <div className="h-2 w-2 bg-amber-400 rounded-full animate-bounce" />
-              </>
-            ) : (
-              <>
-                <WifiOff className="h-5 w-5" />
-                <span>غير متصل</span>
-              </>
-            )}
+          <div className="flex items-center gap-3">
+            {/* Live Connection Status */}
+            <div className={cn(
+              "flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg",
+              socketStatus === "connected" 
+                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-emerald-500/10" 
+                : socketStatus === "connecting"
+                ? "bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10"
+                : "bg-card/50 text-muted-foreground border-border/50"
+            )}>
+              {socketStatus === "connected" ? (
+                <>
+                  <div className="relative">
+                    <Wifi className="h-5 w-5" />
+                    <div className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-400 rounded-full animate-ping" />
+                  </div>
+                  <span>البث الحي متصل</span>
+                  <Signal className="h-4 w-4 animate-pulse" />
+                </>
+              ) : socketStatus === "connecting" ? (
+                <>
+                  <Wifi className="h-5 w-5 animate-pulse" />
+                  <span>جاري الاتصال...</span>
+                  <div className="h-2 w-2 bg-amber-400 rounded-full animate-bounce" />
+                </>
+              ) : (
+                <>
+                  <WifiOff className="h-5 w-5" />
+                  <span>غير متصل</span>
+                </>
+              )}
+            </div>
+            
+            {/* Status Change */}
+            <Select
+              value={currentStatus as TrackingStatus}
+              onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+              disabled={statusMutation.isPending}
+            >
+              <SelectTrigger className="flex items-center gap-3 px-5 py-3 h-auto rounded-2xl text-sm font-semibold transition-all duration-500 border shadow-lg bg-card/50 border-border/50 hover:border-primary/30">
+                <Activity className="h-5 w-5 text-primary" />
+                <SelectValue placeholder="تغيير الحالة" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                    جديد
+                  </span>
+                </SelectItem>
+                <SelectItem value="in_progress">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    قيد التتبع
+                  </span>
+                </SelectItem>
+                <SelectItem value="done">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                    مكتمل
+                  </span>
+                </SelectItem>
+                <SelectItem value="rejected">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                    مرفوض
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         {/* Main Map Section */}
