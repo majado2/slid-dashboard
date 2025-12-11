@@ -1,9 +1,18 @@
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Separator } from "@/components/ui/separator";
 
 const DashboardLayout = () => {
+  // Force dark mode for all dashboard pages
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+    return () => {
+      document.documentElement.classList.remove('dark');
+    };
+  }, []);
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
