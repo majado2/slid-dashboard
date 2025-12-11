@@ -391,58 +391,6 @@ const RequestDetails = () => {
             )}
           </div>
         </div>
-        {/* Status Change Card - Single Row */}
-        <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <CardContent className="relative p-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                  <Activity className="h-5 w-5 text-primary" />
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground font-medium mb-1.5">تغيير الحالة</p>
-                <Select
-                  value={currentStatus as TrackingStatus}
-                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                  disabled={statusMutation.isPending}
-                >
-                  <SelectTrigger className="w-full max-w-xs h-9 text-sm bg-background/50 border-border/50 hover:bg-background transition-colors">
-                    <SelectValue placeholder="اختر الحالة" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
-                        جديد
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="in_progress">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse shadow-sm shadow-blue-500/50"></span>
-                        قيد التتبع
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="done">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
-                        مكتمل
-                      </span>
-                    </SelectItem>
-                    <SelectItem value="rejected">
-                      <span className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></span>
-                        مرفوض
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Main Map Section */}
         <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur shadow-2xl">
           <div className="h-[650px] relative">
@@ -462,6 +410,47 @@ const RequestDetails = () => {
                         LIVE
                       </Badge>
                     )}
+                  </div>
+                  
+                  {/* Status Change */}
+                  <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                    <Activity className="h-4 w-4 text-primary" />
+                    <span className="text-xs text-muted-foreground">الحالة:</span>
+                    <Select
+                      value={currentStatus as TrackingStatus}
+                      onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                      disabled={statusMutation.isPending}
+                    >
+                      <SelectTrigger className="h-7 w-auto min-w-[100px] text-xs bg-transparent border-0 p-0 pr-2 focus:ring-0 shadow-none">
+                        <SelectValue placeholder="اختر الحالة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="new">
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+                            جديد
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="in_progress">
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                            قيد التتبع
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="done">
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                            مكتمل
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="rejected">
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                            مرفوض
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   {/* Beneficiary */}
