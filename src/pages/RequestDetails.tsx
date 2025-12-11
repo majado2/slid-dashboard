@@ -391,132 +391,57 @@ const RequestDetails = () => {
             )}
           </div>
         </div>
-
-        {/* Info Cards Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Beneficiary Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <CardContent className="relative p-5">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <User className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
-                    <Eye className="h-2.5 w-2.5 text-primary-foreground" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground font-medium mb-1">المستفيد</p>
-                  <p className="font-bold text-lg truncate">
-                    {beneficiaryName || `مستفيد #${request.beneficiary_id}`}
-                  </p>
-                  {beneficiaryNationalId && (
-                    <p className="text-xs text-muted-foreground font-mono mt-1 bg-muted/50 px-2 py-0.5 rounded w-fit">{beneficiaryNationalId}</p>
-                  )}
+        {/* Status Change Card - Single Row */}
+        <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <CardContent className="relative p-4">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                  <Activity className="h-5 w-5 text-primary" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Authority Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <CardContent className="relative p-5">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-110">
-                    {authorityLogo ? (
-                      <img src={authorityLogo} alt="شعار الجهة" className="h-8 w-8 object-contain" />
-                    ) : (
-                      <Building2 className="h-6 w-6 text-primary" />
-                    )}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground font-medium mb-1">الجهة المختصة</p>
-                  <p className="font-bold text-lg truncate">
-                    {authorityName || `جهة #${request.authority_id}`}
-                  </p>
-                </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground font-medium mb-1.5">تغيير الحالة</p>
+                <Select
+                  value={currentStatus as TrackingStatus}
+                  onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
+                  disabled={statusMutation.isPending}
+                >
+                  <SelectTrigger className="w-full max-w-xs h-9 text-sm bg-background/50 border-border/50 hover:bg-background transition-colors">
+                    <SelectValue placeholder="اختر الحالة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
+                        جديد
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="in_progress">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse shadow-sm shadow-blue-500/50"></span>
+                        قيد التتبع
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="done">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
+                        مكتمل
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="rejected">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></span>
+                        مرفوض
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Channel Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <CardContent className="relative p-5">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <Radio className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full flex items-center justify-center">
-                    <Zap className="h-2.5 w-2.5 text-white" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground font-medium mb-1">قناة الإرسال</p>
-                  <Badge variant="secondary" className="font-mono text-sm px-3 py-1">{request.channel}</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Status Change Card */}
-          <Card className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <CardContent className="relative p-5">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                    <Activity className="h-6 w-6 text-primary" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground font-medium mb-2">تغيير الحالة</p>
-                  <Select
-                    value={currentStatus as TrackingStatus}
-                    onValueChange={(val) => statusMutation.mutate({ status: val as TrackingStatus })}
-                    disabled={statusMutation.isPending}
-                  >
-                    <SelectTrigger className="w-full h-9 text-sm bg-background/50 border-border/50 hover:bg-background transition-colors">
-                      <SelectValue placeholder="اختر الحالة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="new">
-                        <span className="flex items-center gap-2">
-                          <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
-                          جديد
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="in_progress">
-                        <span className="flex items-center gap-2">
-                          <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse shadow-sm shadow-blue-500/50"></span>
-                          قيد التتبع
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="done">
-                        <span className="flex items-center gap-2">
-                          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
-                          مكتمل
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="rejected">
-                        <span className="flex items-center gap-2">
-                          <span className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></span>
-                          مرفوض
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Map Section */}
         <Card className="overflow-hidden border-border/50 bg-card/50 backdrop-blur shadow-2xl">
@@ -524,18 +449,53 @@ const RequestDetails = () => {
             {/* Map Header Overlay */}
             <div className="absolute top-0 left-0 right-0 z-[1000] p-4 bg-gradient-to-b from-background/95 via-background/70 to-transparent">
               <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
-                  <div className="relative">
-                    <MapPin className="h-5 w-5 text-primary" />
-                    {isLive && <div className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-ping" />}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {/* Live Map Label */}
+                  <div className="flex items-center gap-3 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
+                    <div className="relative">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      {isLive && <div className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-ping" />}
+                    </div>
+                    <span className="font-bold text-sm">خريطة التتبع الحية</span>
+                    {isLive && (
+                      <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse">
+                        LIVE
+                      </Badge>
+                    )}
                   </div>
-                  <span className="font-bold text-sm">خريطة التتبع الحية</span>
-                  {isLive && (
-                    <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse">
-                      LIVE
-                    </Badge>
-                  )}
+                  
+                  {/* Beneficiary */}
+                  <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
+                    <User className="h-4 w-4 text-primary" />
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-muted-foreground">المستفيد</span>
+                      <span className="text-sm font-bold truncate max-w-[140px]">{beneficiaryName || `#${request.beneficiary_id}`}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Authority */}
+                  <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
+                    {authorityLogo ? (
+                      <img src={authorityLogo} alt="" className="h-5 w-5 object-contain" />
+                    ) : (
+                      <Building2 className="h-4 w-4 text-primary" />
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-muted-foreground">الجهة</span>
+                      <span className="text-sm font-bold truncate max-w-[140px]">{authorityName || `#${request.authority_id}`}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Channel */}
+                  <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
+                    <Radio className="h-4 w-4 text-primary" />
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-muted-foreground">القناة</span>
+                      <Badge variant="secondary" className="font-mono text-xs px-2 py-0">{request.channel}</Badge>
+                    </div>
+                  </div>
                 </div>
+                
                 <div className="flex items-center gap-3">
                   {logs.length > 0 && (
                     <div className="flex items-center gap-2 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50">
