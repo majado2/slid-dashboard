@@ -467,10 +467,8 @@ const RequestDetails = () => {
                   {/* Beneficiary */}
                   <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
                     <User className="h-4 w-4 text-primary" />
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-muted-foreground">المستفيد</span>
-                      <span className="text-sm font-bold truncate max-w-[140px]">{beneficiaryName || `#${request.beneficiary_id}`}</span>
-                    </div>
+                    <span className="text-xs text-muted-foreground">المستفيد:</span>
+                    <span className="text-sm font-bold truncate max-w-[140px]">{beneficiaryName || `#${request.beneficiary_id}`}</span>
                   </div>
                   
                   {/* Authority */}
@@ -480,19 +478,15 @@ const RequestDetails = () => {
                     ) : (
                       <Building2 className="h-4 w-4 text-primary" />
                     )}
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-muted-foreground">الجهة</span>
-                      <span className="text-sm font-bold truncate max-w-[140px]">{authorityName || `#${request.authority_id}`}</span>
-                    </div>
+                    <span className="text-xs text-muted-foreground">الجهة:</span>
+                    <span className="text-sm font-bold truncate max-w-[140px]">{authorityName || `#${request.authority_id}`}</span>
                   </div>
                   
                   {/* Channel */}
                   <div className="flex items-center gap-2.5 bg-background/90 backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-lg border border-border/50 hover:border-primary/30 transition-colors cursor-default">
                     <Radio className="h-4 w-4 text-primary" />
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-muted-foreground">القناة</span>
-                      <Badge variant="secondary" className="font-mono text-xs px-2 py-0">{request.channel}</Badge>
-                    </div>
+                    <span className="text-xs text-muted-foreground">القناة:</span>
+                    <Badge variant="secondary" className="font-mono text-xs px-2 py-0">{request.channel}</Badge>
                   </div>
                 </div>
                 
