@@ -13,7 +13,7 @@ import {
   LocationConsentPayload,
 } from "@/types/api";
 
-const API_BASE_URL = "https://slid.ethra2.com";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://slid.ethra2.com";
 
 // Mock API for development - replace with real API calls
 const useMockAPI = false;
@@ -456,17 +456,20 @@ export async function updateTrackingStatus(id: number, status: TrackingStatus): 
   return response.json();
 }
 
-export async function submitLocationConsent(nationalId: string, payload: LocationConsentPayload): Promise<void> {
+export async function submitLocationConsent(
+  nationalId: string,
+  payload: LocationConsentPayload & { request_id?: number | string },
+): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/api/location/consent/${nationalId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...authHeaders(),
     },
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error("فشل إرسال الإحداثيات");
+    const msg = await response.text().catch(() => "");
+    throw new Error(msg || "فشل إرسال الإحداثيات");
   }
 }

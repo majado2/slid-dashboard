@@ -43,6 +43,7 @@ const Consent = () => {
             accuracy_m: pos.coords.accuracy,
             altitude_m: pos.coords.altitude ?? 0,
             captured_at: new Date().toISOString(),
+            request_id: requestId || undefined,
           });
           setStatus("success");
         } catch (e: any) {
@@ -133,6 +134,11 @@ const Consent = () => {
               <WifiOff className="h-4 w-4" />
               <span>تأكد من اتصال الإنترنت قبل الإرسال</span>
             </div>
+            {import.meta.env.VITE_API_BASE_URL && (
+              <div className="text-xs text-muted-foreground" dir="ltr">
+                API: {import.meta.env.VITE_API_BASE_URL}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

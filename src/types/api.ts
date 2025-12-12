@@ -103,4 +103,5 @@ export interface LocationConsentPayload {
   accuracy_m: number;
   altitude_m: number;
   captured_at?: string;
+  request_id?: number | string;
 }
