@@ -10,6 +10,7 @@ import {
   BeneficiaryOption,
   AuthorityOption,
   TrackingStatus,
+  LocationConsentPayload,
 } from "@/types/api";
 
 const API_BASE_URL = "https://slid.ethra2.com";
@@ -453,4 +454,19 @@ export async function updateTrackingStatus(id: number, status: TrackingStatus): 
     throw new Error("فشل تحديث حالة الطلب");
   }
   return response.json();
+}
+
+export async function submitLocationConsent(nationalId: string, payload: LocationConsentPayload): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/location/consent/${nationalId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders(),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("فشل إرسال الإحداثيات");
+  }
 }

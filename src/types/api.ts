@@ -96,3 +96,11 @@ export interface AuthorityOption {
 }
 
 export type TrackingStatus = "new" | "in_progress" | "done" | "rejected";
+
+export interface LocationConsentPayload {
+  latitude: number;
+  longitude: number;
+  accuracy_m: number;
+  altitude_m: number;
+  captured_at?: string;
+}
